@@ -4,6 +4,7 @@
   z-index: 100;
   background-color: var(--bg-surface);
   box-shadow: var(--shadow-sm);
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 .top-bar {
@@ -86,6 +87,17 @@
   align-items: center;
   gap: 0.75rem;
   text-decoration: none;
+
+  .brand-logo-img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+    background: #ffffff;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    padding: 2px;
+  }
 
   .logo-icon {
     display: flex;
