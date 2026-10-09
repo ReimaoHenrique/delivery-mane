@@ -1,0 +1,193 @@
+@if (addressService.isLocationModalOpen()) {
+  <div class="modal-backdrop" (click)="close()"></div>
+  <div class="modal-card animate-fade-in">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <div class="header-titles">
+        <h3>Como você quer receber seu churrasco?</h3>
+        <p>Escolha entrega em embalagem térmica refrigerada ou retirada rápida no balcão.</p>
+      </div>
+      <button class="close-modal-btn" (click)="close()">✕</button>
+    </div>
+
+    <!-- Fulfillment Type Toggle Tabs -->
+    <div class="type-toggle-tabs">
+      <button 
+        type="button" 
+        class="toggle-tab" 
+        [class.active]="activeTab() === 'delivery'"
+        (click)="setTab('delivery')"
+      >
+        <div class="tab-icon">🚚</div>
+        <div class="tab-text">
+          <strong>Receber em Casa</strong>
+          <small>Entrega expressa ou programada</small>
+        </div>
+      </button>
+
+      <button 
+        type="button" 
+        class="toggle-tab" 
+        [class.active]="activeTab() === 'pickup'"
+        (click)="setTab('pickup')"
+      >
+        <div class="tab-icon">🏪</div>
+        <div class="tab-text">
+          <strong>Retirar na Loja</strong>
+          <small>Frete R$ 0,00 (Grátis)</small>
+        </div>
+      </button>
+    </div>
+
+    <!-- Modal Body: Delivery vs Pickup -->
+    <div class="modal-body">
+      @if (activeTab() === 'delivery') {
+        <!-- Option A: Delivery -->
+        @if (!isAddingNewAddress()) {
+          <div class="saved-addresses-section">
+            <div class="section-top">
+              <h4>Selecione um endereço salvo:</h4>
+              <button type="button" class="btn btn-subtle btn-sm" (click)="isAddingNewAddress.set(true)">
+                + Novo Endereço
+              </button>
+            </div>
+
+            <div class="addresses-list">
+              @for (addr of addressService.savedAddresses(); track addr.id) {
+                <div 
+                  class="address-option-card"
+                  [class.selected]="addressService.fulfillment().selectedAddress?.id === addr.id"
+                  (click)="selectAddress(addr)"
+                >
+                  <div class="addr-radio">
+                    <input 
+                      type="radio" 
+                      name="selectedAddr" 
+                      [checked]="addressService.fulfillment().selectedAddress?.id === addr.id" 
+                    />
+                  </div>
+                  <div class="addr-info">
+                    <strong>{{ addr.name || 'Endereço' }}</strong>
+                    <p>{{ addr.street }}, nº {{ addr.number }} {{ addr.complement ? '(' + addr.complement + ')' : '' }}</p>
+                    <small>{{ addr.neighborhood }} • {{ addr.city }}-{{ addr.state }} • CEP {{ addr.zipCode }}</small>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        } @else {
+          <!-- New Address Form -->
+          <form class="new-address-form" (submit)="saveNewAddress()">
+            <div class="form-header">
+              <h4>Adicionar novo endereço</h4>
+              <button type="button" class="btn btn-subtle btn-sm" (click)="isAddingNewAddress.set(false)">
+                Voltar aos salvos
+              </button>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group col-4">
+                <label>CEP *</label>
+                <div class="input-with-loading">
+                  <input 
+                    type="text" 
+                    placeholder="88000-000" 
+                    [(ngModel)]="newAddress().zipCode" 
+                    (blur)="onCepBlur()" 
+                    name="zipCode" 
+                    required 
+                  />
+                  @if (isSearchingCep()) {
+                    <span class="cep-spinner">⌛</span>
+                  }
+                </div>
+              </div>
+
+              <div class="form-group col-8">
+                <label>Identificação (Ex: Casa, Sítio)</label>
+                <input type="text" [(ngModel)]="newAddress().name" name="addrName" />
+              </div>
+
+              <div class="form-group col-9">
+                <label>Rua / Logradouro *</label>
+                <input type="text" [(ngModel)]="newAddress().street" name="street" required />
+              </div>
+
+              <div class="form-group col-3">
+                <label>Número *</label>
+                <input type="text" [(ngModel)]="newAddress().number" name="number" required />
+              </div>
+
+              <div class="form-group col-6">
+                <label>Bairro *</label>
+                <input type="text" [(ngModel)]="newAddress().neighborhood" name="neighborhood" required />
+              </div>
+
+              <div class="form-group col-6">
+                <label>Complemento</label>
+                <input type="text" placeholder="Apto, Bloco, etc." [(ngModel)]="newAddress().complement" name="complement" />
+              </div>
+
+              <div class="form-group col-12">
+                <label>Ponto de Referência</label>
+                <input type="text" placeholder="Ex: Próximo à padaria" [(ngModel)]="newAddress().referencePoint" name="ref" />
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-outline" (click)="isAddingNewAddress.set(false)">Cancelar</button>
+              <button type="submit" class="btn btn-primary">Salvar e Usar Endereço</button>
+            </div>
+          </form>
+        }
+      } @else {
+        <!-- Option B: Pickup -->
+        <div class="pickup-section">
+          <h4>Escolha a loja para retirar suas carnes:</h4>
+
+          <div class="stores-list">
+            @for (store of storeService.stores(); track store.id) {
+              <div 
+                class="store-option-card"
+                [class.selected]="selectedStore().id === store.id"
+                (click)="selectedStore.set(store)"
+              >
+                <div class="store-header">
+                  <strong>🏪 {{ store.tradeName }}</strong>
+                  <span class="badge badge-success">Frete Grátis</span>
+                </div>
+                <p class="store-addr">{{ store.address }} - {{ store.neighborhood }}, {{ store.city }}</p>
+                <p class="store-hours">⏰ {{ store.openingHours }}</p>
+                <small class="store-instr">{{ store.pickupInstructions }}</small>
+              </div>
+            }
+          </div>
+
+          <div class="pickup-schedule">
+            <div class="schedule-group">
+              <label>Dia da Retirada:</label>
+              <select [(ngModel)]="selectedPickupDay" name="pickupDay" class="custom-select">
+                @for (day of selectedStore().availablePickupDays; track day) {
+                  <option [value]="day">{{ day }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="schedule-group">
+              <label>Janela de Horário:</label>
+              <select [(ngModel)]="selectedTimeSlot" name="timeSlot" class="custom-select">
+                @for (slot of selectedStore().timeSlots; track slot) {
+                  <option [value]="slot">{{ slot }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-accent btn-lg confirm-pickup-btn" (click)="confirmPickup()">
+            Confirmar Retirada nesta Loja
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+}

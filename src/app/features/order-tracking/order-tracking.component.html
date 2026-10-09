@@ -1,0 +1,213 @@
+<div class="tracking-page container">
+  @if (!order()) {
+    <div class="no-order-box">
+      <div class="no-icon">📦</div>
+      <h2>Nenhum pedido selecionado</h2>
+      <p>Você ainda não realizou pedidos nesta sessão ou o pedido não foi localizado.</p>
+      <a routerLink="/" class="btn btn-primary">Voltar para o Início</a>
+    </div>
+  } @else {
+    <!-- Active Order Content -->
+    <div class="tracking-header">
+      <div class="header-left">
+        <span class="order-badge">Pedido #{{ order()?.orderNumber }}</span>
+        <h1>Acompanhamento do Pedido</h1>
+        <p class="order-date">Realizado em {{ order()?.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+      </div>
+
+      <!-- Demonstration Simulator Trigger -->
+      <div class="simulator-box">
+        <span class="sim-label">⚡ Modo Demonstração:</span>
+        <button type="button" class="btn btn-accent btn-sm" (click)="advanceSimulation()">
+          Simular Próximo Passo do Pedido →
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Grid: Timeline + Order Details -->
+    <div class="tracking-grid">
+      <!-- Left: Visual Timeline -->
+      <div class="timeline-card">
+        <div class="status-summary-banner">
+          <div class="status-icon">
+            @switch (order()?.status) {
+              @case ('received') { 📥 }
+              @case ('confirmed') { 🥩 }
+              @case ('preparing') { 🔪 }
+              @case ('ready_or_out') { 🚚 }
+              @case ('completed') { 🎉 }
+              @default { ℹ️ }
+            }
+          </div>
+          <div class="status-text">
+            <h3>{{ order()?.statusLabel }}</h3>
+            <span>Previsão: <strong>{{ order()?.estimatedDeliveryOrPickupTime }}</strong></span>
+          </div>
+        </div>
+
+        <div class="vertical-timeline">
+          <!-- 1. Received -->
+          <div class="timeline-step" [class.completed]="isStepCompleted('received')" [class.active]="isStepActive('received')">
+            <div class="node">
+              <span class="dot"></span>
+              <span class="line"></span>
+            </div>
+            <div class="step-info">
+              <h4>Pedido Recebido</h4>
+              <p>Seu pedido foi registrado no sistema com sucesso.</p>
+            </div>
+          </div>
+
+          <!-- 2. Confirmed -->
+          <div class="timeline-step" [class.completed]="isStepCompleted('confirmed')" [class.active]="isStepActive('confirmed')">
+            <div class="node">
+              <span class="dot"></span>
+              <span class="line"></span>
+            </div>
+            <div class="step-info">
+              <h4>Confirmado pelo Açougue</h4>
+              <p>O açougueiro confirmou a disponibilidade e qualidade dos cortes in natura.</p>
+            </div>
+          </div>
+
+          <!-- 3. Preparing -->
+          <div class="timeline-step" [class.completed]="isStepCompleted('preparing')" [class.active]="isStepActive('preparing')">
+            <div class="node">
+              <span class="dot"></span>
+              <span class="line"></span>
+            </div>
+            <div class="step-info">
+              <h4>Em Separação e Corte</h4>
+              <p>Carnes cruas sendo porcionadas, pesadas e embaladas com isolamento térmico.</p>
+            </div>
+          </div>
+
+          <!-- 4. Ready or Out -->
+          <div class="timeline-step" [class.completed]="isStepCompleted('ready_or_out')" [class.active]="isStepActive('ready_or_out')">
+            <div class="node">
+              <span class="dot"></span>
+              <span class="line"></span>
+            </div>
+            <div class="step-info">
+              <h4>
+                @if (order()?.fulfillmentType === 'delivery') {
+                  Saiu para Entrega 🚚
+                } @else {
+                  Pronto para Retirada no Balcão 🏪
+                }
+              </h4>
+              <p>
+                @if (order()?.fulfillmentType === 'delivery') {
+                  O entregador retirou a embalagem térmica refrigerada e está a caminho do seu endereço.
+                } @else {
+                  Seu pedido já está no balcão da loja aguardando você.
+                }
+              </p>
+            </div>
+          </div>
+
+          <!-- 5. Completed -->
+          <div class="timeline-step" [class.completed]="isStepCompleted('completed')" [class.active]="isStepActive('completed')">
+            <div class="node">
+              <span class="dot"></span>
+            </div>
+            <div class="step-info">
+              <h4>Pedido Concluído 🎉</h4>
+              <p>Churrasco garantido! Bom apetite!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="butcher-contact-box">
+          <div class="butcher-info">
+            <span class="avatar">👨🍳</span>
+            <div>
+              <strong>Dúvidas sobre o ponto do corte?</strong>
+              <small>Fale diretamente com o Açougue Mané via WhatsApp</small>
+            </div>
+          </div>
+          <button type="button" class="btn btn-outline btn-sm">Chamar no WhatsApp</button>
+        </div>
+      </div>
+
+      <!-- Right: Order Details & Purchased Items -->
+      <div class="order-details-card">
+        <h3>Detalhes do Pedido</h3>
+
+        <!-- Fulfillment Info -->
+        <div class="info-block">
+          <span class="lbl">Forma de Recebimento:</span>
+          @if (order()?.fulfillmentType === 'delivery') {
+            <strong>🚚 Entrega em Domicílio</strong>
+            <p>{{ order()?.deliveryAddress?.street }}, nº {{ order()?.deliveryAddress?.number }}</p>
+            <small>{{ order()?.deliveryAddress?.neighborhood }} - {{ order()?.deliveryAddress?.city }}/{{ order()?.deliveryAddress?.state }}</small>
+          } @else {
+            <strong>🏪 Retirada na Loja</strong>
+            <p>{{ order()?.pickupStore?.tradeName }}</p>
+            <small>{{ order()?.pickupStore?.address }}</small>
+          }
+        </div>
+
+        <!-- Payment Info -->
+        <div class="info-block">
+          <span class="lbl">Forma de Pagamento:</span>
+          <strong>💳 {{ order()?.payment?.methodLabel }}</strong>
+          <small>Status: {{ order()?.payment?.isPaid ? 'Aprovado' : 'Aguardando Pagamento na Entrega' }}</small>
+        </div>
+
+        <!-- Items List -->
+        <div class="info-block items-block">
+          <span class="lbl">Itens do Pedido:</span>
+          <div class="tracking-items-list">
+            @for (item of order()?.items; track item.id) {
+              @if (item.type === 'custom-kit' && item.customKit) {
+                <div class="tracking-item kit-item">
+                  <div class="item-head">
+                    <strong>🔥 {{ item.customKit.name }}</strong>
+                    <span>{{ item.subtotal | currencyBrl }}</span>
+                  </div>
+                  <ul class="sub-items">
+                    @for (c of item.customKit.items; track c.product.id) {
+                      <li>{{ c.product.name }} ({{ c.quantity | unitFormat:c.product.unit }})</li>
+                    }
+                  </ul>
+                </div>
+              }
+
+              @if (item.type === 'single-product' && item.product) {
+                <div class="tracking-item product-item">
+                  <div class="item-head">
+                    <span>{{ item.product.name }} ({{ (item.itemWeightOrUnit || 1) | unitFormat:item.product.unit }})</span>
+                    <strong>{{ item.subtotal | currencyBrl }}</strong>
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        </div>
+
+        <!-- Totals summary -->
+        <div class="totals-box">
+          <div class="row">
+            <span>Subtotal:</span>
+            <span>{{ order()?.subtotal | currencyBrl }}</span>
+          </div>
+          @if ((order()?.discount || 0) > 0) {
+            <div class="row disc">
+              <span>Desconto:</span>
+              <span>-{{ order()?.discount | currencyBrl }}</span>
+            </div>
+          }
+          <div class="row">
+            <span>Frete:</span>
+            <span>{{ (order()?.deliveryFee || 0) === 0 ? 'Grátis' : (order()?.deliveryFee | currencyBrl) }}</span>
+          </div>
+          <div class="row total-row">
+            <span>Total:</span>
+            <span class="tot-val">{{ order()?.total | currencyBrl }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

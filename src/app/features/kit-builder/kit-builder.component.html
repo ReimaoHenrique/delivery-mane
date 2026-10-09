@@ -1,0 +1,395 @@
+<div class="kit-builder-page">
+  <!-- Header Banner -->
+  <div class="builder-header-banner">
+    <div class="container banner-inner">
+      <div class="banner-title-box">
+        <span class="badge badge-sale">🔥 Experiência Personalizada</span>
+        <h1>Monte seu Kit de Churrasco do Mané</h1>
+        <p>Escolha cortes in natura, complementos e bebidas sob medida. Ganhe <strong>5% de desconto imediato</strong> no kit!</p>
+      </div>
+
+      <!-- Realtime Rule Validation Card -->
+      <div class="rule-status-box" [class.rule-valid]="kitBuilder.validation().isValid">
+        <div class="rule-top">
+          <span class="rule-icon">
+            @if (kitBuilder.validation().isValid) {
+              ✅
+            } @else {
+              ⚠️
+            }
+          </span>
+          <div class="rule-text">
+            <strong>Regra Obrigatória do Kit:</strong>
+            <span>Mínimo de 3 produtos distintos</span>
+          </div>
+          <span class="counter-badge" [class.counter-success]="kitBuilder.validation().isValid">
+            {{ kitBuilder.distinctCount() }} / {{ minRequired }} itens
+          </span>
+        </div>
+
+        <div class="rule-progress-bar">
+          <div 
+            class="progress-fill" 
+            [style.width.%]="(kitBuilder.distinctCount() / minRequired) * 100 > 100 ? 100 : (kitBuilder.distinctCount() / minRequired) * 100"
+          ></div>
+        </div>
+
+        <div class="rule-message">
+          {{ kitBuilder.validation().message }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container main-builder-layout">
+    <!-- Left Column: Steps & Products Matrix -->
+    <div class="builder-content">
+      <!-- Step Tabs (AliExpress / Wizard Inspired) -->
+      <div class="step-nav-tabs">
+        <button 
+          type="button" 
+          class="step-tab" 
+          [class.active]="kitBuilder.currentStep() === 'meats'"
+          (click)="kitBuilder.setStep('meats')"
+        >
+          <span class="step-num">1</span>
+          <div class="step-info">
+            <strong>Escolha as Carnes</strong>
+            <small>Cortes bovinos, suínos e aves</small>
+          </div>
+        </button>
+
+        <button 
+          type="button" 
+          class="step-tab" 
+          [class.active]="kitBuilder.currentStep() === 'accessories'"
+          (click)="kitBuilder.setStep('accessories')"
+        >
+          <span class="step-num">2</span>
+          <div class="step-info">
+            <strong>Complementos</strong>
+            <small>Carvão, acendedores e sais</small>
+          </div>
+        </button>
+
+        <button 
+          type="button" 
+          class="step-tab" 
+          [class.active]="kitBuilder.currentStep() === 'drinks'"
+          (click)="kitBuilder.setStep('drinks')"
+        >
+          <span class="step-num">3</span>
+          <div class="step-info">
+            <strong>Bebidas Geladas</strong>
+            <small>Cervejas artesanais e refrigerantes</small>
+          </div>
+        </button>
+      </div>
+
+      <!-- Step 1: Meats Grid -->
+      @if (kitBuilder.currentStep() === 'meats') {
+        <div class="step-container animate-fade-in">
+          <div class="step-intro">
+            <div>
+              <h2>🥩 Etapa 1 — Selecione seus Cortes Crus</h2>
+              <p>Carnes in natura, porcionadas sob demanda com corte preciso de açougue.</p>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm" (click)="kitBuilder.setStep('accessories')">
+              Próximo: Complementos →
+            </button>
+          </div>
+
+          <div class="matrix-grid">
+            @for (prod of meatsProducts(); track prod.id) {
+              <div 
+                class="matrix-card" 
+                [class.selected]="kitBuilder.isProductSelected(prod.id)"
+              >
+                <!-- Image & Tag -->
+                <div class="matrix-img-box">
+                  <img [src]="prod.imageUrl" [alt]="prod.name" loading="lazy" />
+                  <span class="meat-badge">Cru in Natura</span>
+                  @if (kitBuilder.isProductSelected(prod.id)) {
+                    <div class="selected-checkmark">✓ Selecionado</div>
+                  }
+                </div>
+
+                <!-- Info -->
+                <div class="matrix-info">
+                  <span class="prod-type">{{ prod.cutType || prod.category }}</span>
+                  <h4 class="prod-title">{{ prod.name }}</h4>
+                  <div class="price-line">
+                    <span class="price">{{ prod.price | currencyBrl }}</span>
+                    <span class="unit">/ {{ prod.unit }}</span>
+                  </div>
+
+                  <!-- Controls -->
+                  <div class="matrix-controls">
+                    <div class="stepper-box">
+                      <button type="button" class="stepper-btn" (click)="decrementGridQty(prod)">−</button>
+                      <span class="stepper-value">{{ getQty(prod.id) | unitFormat:prod.unit }}</span>
+                      <button type="button" class="stepper-btn" (click)="incrementGridQty(prod)">+</button>
+                    </div>
+
+                    <button 
+                      type="button" 
+                      class="btn select-btn"
+                      [class.btn-primary]="!kitBuilder.isProductSelected(prod.id)"
+                      [class.btn-danger-outline]="kitBuilder.isProductSelected(prod.id)"
+                      (click)="toggleProductInKit(prod)"
+                    >
+                      @if (kitBuilder.isProductSelected(prod.id)) {
+                        Remover do Kit
+                      } @else {
+                        + Incluir no Kit
+                      }
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Step 2: Accessories & Charcoal Grid -->
+      @if (kitBuilder.currentStep() === 'accessories') {
+        <div class="step-container animate-fade-in">
+          <div class="step-intro">
+            <div>
+              <h2>🔥 Etapa 2 — Carvão, Acendedores & Sais</h2>
+              <p>Tudo o que a brasa perfeita precisa para queimar e temperar com maestria.</p>
+            </div>
+            <div class="step-actions-nav">
+              <button type="button" class="btn btn-subtle btn-sm" (click)="kitBuilder.setStep('meats')">
+                ← Voltar às Carnes
+              </button>
+              <button type="button" class="btn btn-outline btn-sm" (click)="kitBuilder.setStep('drinks')">
+                Próximo: Bebidas →
+              </button>
+            </div>
+          </div>
+
+          <div class="matrix-grid">
+            @for (prod of accessoriesProducts(); track prod.id) {
+              <div 
+                class="matrix-card" 
+                [class.selected]="kitBuilder.isProductSelected(prod.id)"
+              >
+                <div class="matrix-img-box">
+                  <img [src]="prod.imageUrl" [alt]="prod.name" loading="lazy" />
+                  @if (kitBuilder.isProductSelected(prod.id)) {
+                    <div class="selected-checkmark">✓ Selecionado</div>
+                  }
+                </div>
+
+                <div class="matrix-info">
+                  <span class="prod-type">{{ prod.category }}</span>
+                  <h4 class="prod-title">{{ prod.name }}</h4>
+                  <div class="price-line">
+                    <span class="price">{{ prod.price | currencyBrl }}</span>
+                    <span class="unit">/ {{ prod.unit }}</span>
+                  </div>
+
+                  <div class="matrix-controls">
+                    <div class="stepper-box">
+                      <button type="button" class="stepper-btn" (click)="decrementGridQty(prod)">−</button>
+                      <span class="stepper-value">{{ getQty(prod.id) | unitFormat:prod.unit }}</span>
+                      <button type="button" class="stepper-btn" (click)="incrementGridQty(prod)">+</button>
+                    </div>
+
+                    <button 
+                      type="button" 
+                      class="btn select-btn"
+                      [class.btn-primary]="!kitBuilder.isProductSelected(prod.id)"
+                      [class.btn-danger-outline]="kitBuilder.isProductSelected(prod.id)"
+                      (click)="toggleProductInKit(prod)"
+                    >
+                      @if (kitBuilder.isProductSelected(prod.id)) {
+                        Remover do Kit
+                      } @else {
+                        + Incluir no Kit
+                      }
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Step 3: Drinks Grid -->
+      @if (kitBuilder.currentStep() === 'drinks') {
+        <div class="step-container animate-fade-in">
+          <div class="step-intro">
+            <div>
+              <h2>🍺 Etapa 3 — Cervejas & Bebidas Refrescantes</h2>
+              <p>Bebidas geladas para acompanhar a fumaça da brasa. (Venda proibida para menores de 18 anos).</p>
+            </div>
+            <button type="button" class="btn btn-subtle btn-sm" (click)="kitBuilder.setStep('accessories')">
+              ← Voltar aos Complementos
+            </button>
+          </div>
+
+          <div class="matrix-grid">
+            @for (prod of drinksProducts(); track prod.id) {
+              <div 
+                class="matrix-card" 
+                [class.selected]="kitBuilder.isProductSelected(prod.id)"
+              >
+                <div class="matrix-img-box">
+                  <img [src]="prod.imageUrl" [alt]="prod.name" loading="lazy" />
+                  @if (kitBuilder.isProductSelected(prod.id)) {
+                    <div class="selected-checkmark">✓ Selecionado</div>
+                  }
+                </div>
+
+                <div class="matrix-info">
+                  <span class="prod-type">Bebidas</span>
+                  <h4 class="prod-title">{{ prod.name }}</h4>
+                  <div class="price-line">
+                    <span class="price">{{ prod.price | currencyBrl }}</span>
+                    <span class="unit">/ {{ prod.unit }}</span>
+                  </div>
+
+                  <div class="matrix-controls">
+                    <div class="stepper-box">
+                      <button type="button" class="stepper-btn" (click)="decrementGridQty(prod)">−</button>
+                      <span class="stepper-value">{{ getQty(prod.id) | unitFormat:prod.unit }}</span>
+                      <button type="button" class="stepper-btn" (click)="incrementGridQty(prod)">+</button>
+                    </div>
+
+                    <button 
+                      type="button" 
+                      class="btn select-btn"
+                      [class.btn-primary]="!kitBuilder.isProductSelected(prod.id)"
+                      [class.btn-danger-outline]="kitBuilder.isProductSelected(prod.id)"
+                      (click)="toggleProductInKit(prod)"
+                    >
+                      @if (kitBuilder.isProductSelected(prod.id)) {
+                        Remover do Kit
+                      } @else {
+                        + Incluir no Kit
+                      }
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Right Column: Real-time Kit Summary Sidebar -->
+    <aside class="builder-sidebar">
+      <div class="summary-sticky-card">
+        <div class="summary-header">
+          <h3>Resumo do seu Kit</h3>
+          <button type="button" class="clear-btn" (click)="kitBuilder.clearKit()" [disabled]="kitBuilder.selectedItems().length === 0">
+            Limpar
+          </button>
+        </div>
+
+        <!-- Custom Kit Name input -->
+        <div class="kit-name-group">
+          <label>Nome do seu Kit:</label>
+          <input 
+            type="text" 
+            [(ngModel)]="kitBuilder.kitName" 
+            placeholder="Ex: Churrasco de Domingo" 
+            class="kit-name-input"
+          />
+        </div>
+
+        <!-- Selected Items Matrix List in Sidebar -->
+        <div class="sidebar-items-list">
+          @if (kitBuilder.selectedItems().length === 0) {
+            <div class="sidebar-empty">
+              <span class="empty-icon">🥩</span>
+              <p>Nenhum produto selecionado ainda.</p>
+              <small>Navegue pelas etapas e adicione pelo menos 3 itens distintos para validar o kit.</small>
+            </div>
+          } @else {
+            @for (item of kitBuilder.selectedItems(); track item.product.id) {
+              <div class="sidebar-item-row">
+                <div class="item-main">
+                  <strong>{{ item.product.name }}</strong>
+                  <div class="item-sub">
+                    <span>{{ item.quantity | unitFormat:item.product.unit }} x {{ item.unitPrice | currencyBrl }}</span>
+                    <span class="item-subtotal">{{ item.subtotal | currencyBrl }}</span>
+                  </div>
+                </div>
+                <button 
+                  type="button" 
+                  class="remove-item-btn" 
+                  (click)="removeItemFromSummary(item.product.id)"
+                  title="Remover produto"
+                >
+                  ✕
+                </button>
+              </div>
+            }
+          }
+        </div>
+
+        <!-- Rule Status in Sidebar -->
+        <div class="sidebar-rule-alert" [class.alert-success]="kitBuilder.validation().isValid">
+          @if (kitBuilder.validation().isValid) {
+            <div class="alert-content">
+              <strong>🎉 Regra dos 3 itens atendida!</strong>
+              <span>Desconto de 5% aplicado no kit.</span>
+            </div>
+          } @else {
+            <div class="alert-content">
+              <strong>⚠️ Kit incompleto ({{ kitBuilder.distinctCount() }}/{{ minRequired }})</strong>
+              <span>Escolha mais {{ kitBuilder.validation().remainingCount }} produto(s) diferente(s) para liberar a compra do kit.</span>
+            </div>
+          }
+        </div>
+
+        <!-- Price Breakdown -->
+        <div class="sidebar-totals">
+          <div class="tot-line">
+            <span>Subtotal Bruto:</span>
+            <span>{{ kitBuilder.totalGross() | currencyBrl }}</span>
+          </div>
+
+          @if (kitBuilder.discountAmount() > 0) {
+            <div class="tot-line discount-line">
+              <span>Desconto Kit Mané (-{{ discountPercent }}%):</span>
+              <span>-{{ kitBuilder.discountAmount() | currencyBrl }}</span>
+            </div>
+          }
+
+          <div class="tot-line final-line">
+            <span>Total do Kit:</span>
+            <span class="price-val">{{ kitBuilder.totalNet() | currencyBrl }}</span>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="sidebar-actions">
+          <button 
+            type="button" 
+            class="btn btn-primary btn-lg full-btn"
+            [disabled]="!kitBuilder.validation().isValid"
+            (click)="finishKitAndAddToCart()"
+          >
+            Adicionar Kit ao Carrinho 🛒
+          </button>
+
+          <button 
+            type="button" 
+            class="btn btn-accent btn-lg full-btn"
+            [disabled]="!kitBuilder.validation().isValid"
+            (click)="finishKitAndGoToCheckout()"
+          >
+            Comprar Kit Agora →
+          </button>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

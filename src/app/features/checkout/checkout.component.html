@@ -1,0 +1,485 @@
+<div class="checkout-page container">
+  <!-- Top Stepper Bar -->
+  <div class="checkout-stepper-bar">
+    <div class="step-node" [class.active]="currentStep() === 1" [class.done]="currentStep() > 1" (click)="setStep(1)">
+      <span class="node-circle">1</span>
+      <span class="node-text">Itens</span>
+    </div>
+    <div class="step-connector" [class.done]="currentStep() > 1"></div>
+
+    <div class="step-node" [class.active]="currentStep() === 2" [class.done]="currentStep() > 2" (click)="setStep(2)">
+      <span class="node-circle">2</span>
+      <span class="node-text">Recebimento</span>
+    </div>
+    <div class="step-connector" [class.done]="currentStep() > 2"></div>
+
+    <div class="step-node" [class.active]="currentStep() === 3" [class.done]="currentStep() > 3" (click)="setStep(3)">
+      <span class="node-circle">3</span>
+      <span class="node-text">Identificação</span>
+    </div>
+    <div class="step-connector" [class.done]="currentStep() > 3"></div>
+
+    <div class="step-node" [class.active]="currentStep() === 4" [class.done]="currentStep() > 4" (click)="setStep(4)">
+      <span class="node-circle">4</span>
+      <span class="node-text">Pagamento</span>
+    </div>
+    <div class="step-connector" [class.done]="currentStep() > 4"></div>
+
+    <div class="step-node" [class.active]="currentStep() === 5">
+      <span class="node-circle">5</span>
+      <span class="node-text">Confirmação</span>
+    </div>
+  </div>
+
+  <div class="checkout-main-grid">
+    <!-- Left Column: Current Active Step Content -->
+    <div class="checkout-steps-content">
+      <!-- Step 1: Review Items -->
+      @if (currentStep() === 1) {
+        <div class="step-panel animate-fade-in">
+          <div class="panel-header">
+            <h2>1. Revisão dos Cortes e Itens de Churrasco</h2>
+            <p>Confira as carnes cruas, kits montados e complementos do seu pedido.</p>
+          </div>
+
+          @if (cartService.itemsCount() === 0) {
+            <div class="empty-warning">
+              <p>Seu carrinho está vazio!</p>
+              <a routerLink="/catalogo" class="btn btn-primary">Ir para o Catálogo</a>
+            </div>
+          } @else {
+            <div class="items-review-list">
+              @for (item of cartService.items(); track item.id) {
+                @if (item.type === 'custom-kit' && item.customKit) {
+                  <div class="review-item kit-row">
+                    <div class="item-badge-header">
+                      <span class="badge badge-sale">🔥 Kit Personalizado (-{{ item.customKit.discountPercent }}%)</span>
+                    </div>
+                    <div class="item-title-line">
+                      <strong>{{ item.customKit.name }}</strong>
+                      <span class="item-price">{{ item.subtotal | currencyBrl }}</span>
+                    </div>
+                    <ul class="kit-items-bullet">
+                      @for (c of item.customKit.items; track c.product.id) {
+                        <li>{{ c.product.name }} ({{ c.quantity | unitFormat:c.product.unit }})</li>
+                      }
+                    </ul>
+                  </div>
+                }
+
+                @if (item.type === 'single-product' && item.product) {
+                  <div class="review-item product-row">
+                    <img [src]="item.product.imageUrl" [alt]="item.product.name" class="item-img" />
+                    <div class="product-info">
+                      <strong>{{ item.product.name }}</strong>
+                      <span class="unit-price">{{ item.product.price | currencyBrl }} / {{ item.product.unit }}</span>
+                      <span class="qty-weight">Quantidade: {{ (item.itemWeightOrUnit || 1) | unitFormat:item.product.unit }}</span>
+                    </div>
+                    <span class="item-subtotal">{{ item.subtotal | currencyBrl }}</span>
+                  </div>
+                }
+              }
+            </div>
+
+            <div class="panel-actions">
+              <a routerLink="/catalogo" class="btn btn-subtle">+ Adicionar mais itens</a>
+              <button type="button" class="btn btn-accent btn-lg" (click)="nextStep()">
+                Continuar para Forma de Recebimento →
+              </button>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Step 2: Fulfillment (Delivery vs Pickup) -->
+      @if (currentStep() === 2) {
+        <div class="step-panel animate-fade-in">
+          <div class="panel-header">
+            <h2>2. Como deseja receber seu churrasco?</h2>
+            <p>Selecione entrega em casa com embalagem térmica ou retirada gratuita no balcão.</p>
+          </div>
+
+          <!-- Type Selector -->
+          <div class="type-selection-cards">
+            <div 
+              class="type-card" 
+              [class.active]="fulfillmentType() === 'delivery'"
+              (click)="fulfillmentType.set('delivery')"
+            >
+              <div class="type-icon">🚚</div>
+              <div class="type-info">
+                <strong>Receber em Casa</strong>
+                <span>Entregas em caixas térmicas com gelo</span>
+              </div>
+            </div>
+
+            <div 
+              class="type-card" 
+              [class.active]="fulfillmentType() === 'pickup'"
+              (click)="fulfillmentType.set('pickup')"
+            >
+              <div class="type-icon">🏪</div>
+              <div class="type-info">
+                <strong>Retirar na Loja</strong>
+                <span>Balcão exclusivo de retiradas • Frete R$ 0,00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- If Delivery -->
+          @if (fulfillmentType() === 'delivery') {
+            <div class="fulfillment-details-box">
+              <h3>Endereço de Entrega:</h3>
+              <div class="saved-addresses-grid">
+                @for (addr of addressService.savedAddresses(); track addr.id) {
+                  <div 
+                    class="address-card"
+                    [class.selected]="selectedAddress()?.id === addr.id"
+                    (click)="selectedAddress.set(addr)"
+                  >
+                    <strong>📍 {{ addr.name || 'Endereço' }}</strong>
+                    <p>{{ addr.street }}, nº {{ addr.number }} {{ addr.complement ? '(' + addr.complement + ')' : '' }}</p>
+                    <small>{{ addr.neighborhood }} - {{ addr.city }}/{{ addr.state }} • CEP {{ addr.zipCode }}</small>
+                  </div>
+                }
+              </div>
+
+              <h3 class="mt-4">Modalidade de Envio:</h3>
+              <div class="delivery-options-list">
+                @for (opt of addressService.deliveryOptions(); track opt.id) {
+                  <div 
+                    class="delivery-opt-card"
+                    [class.selected]="selectedDeliveryOption()?.id === opt.id"
+                    (click)="selectedDeliveryOption.set(opt)"
+                  >
+                    <div class="opt-left">
+                      <strong>{{ opt.name }}</strong>
+                      <p>{{ opt.description }}</p>
+                      <small>⏱️ Prazo: {{ opt.estimatedTime }}</small>
+                    </div>
+                    <div class="opt-right">
+                      @if (cartService.isFreeDelivery()) {
+                        <span class="badge badge-success">Grátis</span>
+                      } @else {
+                        <span class="opt-fee">{{ opt.fee | currencyBrl }}</span>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- If Pickup -->
+          @if (fulfillmentType() === 'pickup') {
+            <div class="fulfillment-details-box">
+              <h3>Selecione a Loja para Retirada:</h3>
+              <div class="stores-selection-grid">
+                @for (st of storeService.stores(); track st.id) {
+                  <div 
+                    class="store-card"
+                    [class.selected]="selectedStore().id === st.id"
+                    (click)="selectedStore.set(st)"
+                  >
+                    <div class="store-top">
+                      <strong>🏪 {{ st.tradeName }}</strong>
+                      <span class="badge badge-success">Frete Grátis</span>
+                    </div>
+                    <p class="addr">{{ st.address }} - {{ st.neighborhood }}, {{ st.city }}</p>
+                    <p class="hours">⏰ {{ st.openingHours }}</p>
+                    <small class="instructions">💡 {{ st.pickupInstructions }}</small>
+                  </div>
+                }
+              </div>
+
+              <div class="pickup-datetime-row">
+                <div class="select-col">
+                  <label>Data de Retirada:</label>
+                  <select [(ngModel)]="pickupDay" class="checkout-select">
+                    @for (d of selectedStore().availablePickupDays; track d) {
+                      <option [value]="d">{{ d }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="select-col">
+                  <label>Horário Estimado:</label>
+                  <select [(ngModel)]="pickupTime" class="checkout-select">
+                    @for (t of selectedStore().timeSlots; track t) {
+                      <option [value]="t">{{ t }}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+            </div>
+          }
+
+          <div class="panel-actions">
+            <button type="button" class="btn btn-outline" (click)="prevStep()">← Voltar</button>
+            <button type="button" class="btn btn-accent btn-lg" (click)="nextStep()">
+              Avançar para Identificação →
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- Step 3: Customer Identification -->
+      @if (currentStep() === 3) {
+        <div class="step-panel animate-fade-in">
+          <div class="panel-header">
+            <h2>3. Identificação do Cliente</h2>
+            <p>Seus dados para emissão do cupom fiscal e contato do açougueiro/entregador.</p>
+          </div>
+
+          <div class="form-grid-customer">
+            <div class="field-group">
+              <label>Nome Completo *</label>
+              <input type="text" [(ngModel)]="customerName" placeholder="Seu nome" class="form-input" required />
+            </div>
+
+            <div class="field-group">
+              <label>Telefone / WhatsApp para Notificações *</label>
+              <input type="text" [(ngModel)]="customerPhone" placeholder="(48) 99999-9999" class="form-input" required />
+            </div>
+
+            <div class="field-group">
+              <label>E-mail *</label>
+              <input type="email" [(ngModel)]="customerEmail" placeholder="seuemail@exemplo.com" class="form-input" required />
+            </div>
+
+            <div class="field-group">
+              <label>CPF (para emissão da Nota Fiscal) *</label>
+              <input type="text" [(ngModel)]="customerCpf" placeholder="000.000.000-00" class="form-input" required />
+            </div>
+
+            <div class="field-group full-width">
+              <label>Observações para o Açougueiro / Entrega (opcional):</label>
+              <textarea 
+                [(ngModel)]="orderNotes" 
+                placeholder="Ex: Picanha fatiada em bifes de 2 dedos, tocar o interfone 402..." 
+                rows="3" 
+                class="form-textarea"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="panel-actions">
+            <button type="button" class="btn btn-outline" (click)="prevStep()">← Voltar</button>
+            <button type="button" class="btn btn-accent btn-lg" (click)="nextStep()">
+              Avançar para Pagamento →
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- Step 4: Payment -->
+      @if (currentStep() === 4) {
+        <div class="step-panel animate-fade-in">
+          <div class="panel-header">
+            <h2>4. Escolha a Forma de Pagamento</h2>
+            <p>Pagamento seguro com Pix, Cartão ou na entrega.</p>
+          </div>
+
+          <div class="payment-methods-grid">
+            <div 
+              class="pay-method-card"
+              [class.selected]="paymentMethod() === 'pix'"
+              (click)="paymentMethod.set('pix')"
+            >
+              <div class="method-header">
+                <span class="pay-icon">⚡</span>
+                <strong>Pix Instantâneo</strong>
+              </div>
+              <p>Aprovação imediata via QR Code ou Chave Copia-e-Cola.</p>
+              <span class="badge badge-success">Mais Rápido</span>
+            </div>
+
+            <div 
+              class="pay-method-card"
+              [class.selected]="paymentMethod() === 'credit_card'"
+              (click)="paymentMethod.set('credit_card')"
+            >
+              <div class="method-header">
+                <span class="pay-icon">💳</span>
+                <strong>Cartão de Crédito Online</strong>
+              </div>
+              <p>Visa, Mastercard, Elo e Hipercard em até 3x sem juros.</p>
+            </div>
+
+            <div 
+              class="pay-method-card"
+              [class.selected]="paymentMethod() === 'card_on_delivery'"
+              (click)="paymentMethod.set('card_on_delivery')"
+            >
+              <div class="method-header">
+                <span class="pay-icon">📟</span>
+                <strong>Pagar na Entrega / Retirada (Maquininha)</strong>
+              </div>
+              <p>Cartão de Crédito, Débito ou Vale Refeição/Alimentação.</p>
+            </div>
+
+            <div 
+              class="pay-method-card"
+              [class.selected]="paymentMethod() === 'cash_on_delivery'"
+              (click)="paymentMethod.set('cash_on_delivery')"
+            >
+              <div class="method-header">
+                <span class="pay-icon">💵</span>
+                <strong>Dinheiro na Entrega / Retirada</strong>
+              </div>
+              <p>Pagamento em espécie para o entregador ou no balcão.</p>
+            </div>
+          </div>
+
+          <!-- Dynamic Payment Details -->
+          @if (paymentMethod() === 'pix') {
+            <div class="pix-preview-box">
+              <h4>Chave Pix do Açougue:</h4>
+              <div class="pix-code-box">
+                <code>00020126580014br.gov.bcb.pix0136mane-churrasco-delivery...</code>
+                <button type="button" class="btn btn-subtle btn-sm">Copiar Chave</button>
+              </div>
+              <small>O QR Code oficial para escaneamento será exibido após a confirmação final.</small>
+            </div>
+          }
+
+          @if (paymentMethod() === 'credit_card') {
+            <div class="card-form-box">
+              <div class="card-inputs-grid">
+                <div class="col-12">
+                  <label>Número do Cartão:</label>
+                  <input type="text" [(ngModel)]="cardNumber" placeholder="0000 0000 0000 0000" class="form-input" />
+                </div>
+                <div class="col-12">
+                  <label>Nome Impresso no Cartão:</label>
+                  <input type="text" [(ngModel)]="cardHolder" placeholder="NOME COMO NO CARTAO" class="form-input" />
+                </div>
+                <div class="col-6">
+                  <label>Validade:</label>
+                  <input type="text" [(ngModel)]="cardExpiry" placeholder="MM/AA" class="form-input" />
+                </div>
+                <div class="col-6">
+                  <label>CVV:</label>
+                  <input type="text" [(ngModel)]="cardCvv" placeholder="123" class="form-input" />
+                </div>
+              </div>
+            </div>
+          }
+
+          @if (paymentMethod() === 'cash_on_delivery') {
+            <div class="cash-box">
+              <label>Precisa de troco para quanto?</label>
+              <input type="number" [(ngModel)]="cashChangeFor" placeholder="Ex: 200" class="form-input" />
+            </div>
+          }
+
+          <div class="panel-actions">
+            <button type="button" class="btn btn-outline" (click)="prevStep()">← Voltar</button>
+            <button type="button" class="btn btn-accent btn-lg" (click)="nextStep()">
+              Revisar e Finalizar Pedido →
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- Step 5: Final Review & Confirmation -->
+      @if (currentStep() === 5) {
+        <div class="step-panel animate-fade-in">
+          <div class="panel-header">
+            <h2>5. Revisão Final e Confirmação</h2>
+            <p>Revise todos os detalhes antes de enviar o seu pedido ao açougue.</p>
+          </div>
+
+          <div class="review-summary-blocks">
+            <div class="summary-block">
+              <h4>📦 Forma de Recebimento</h4>
+              @if (fulfillmentType() === 'delivery') {
+                <p><strong>Entrega em Casa:</strong> {{ selectedAddress()?.street }}, {{ selectedAddress()?.number }} - {{ selectedAddress()?.neighborhood }}</p>
+                <small>{{ selectedDeliveryOption()?.name }} ({{ selectedDeliveryOption()?.estimatedTime }})</small>
+              } @else {
+                <p><strong>Retirada na Loja:</strong> {{ selectedStore().tradeName }}</p>
+                <small>{{ pickupDay() }} no horário de {{ pickupTime() }}</small>
+              }
+            </div>
+
+            <div class="summary-block">
+              <h4>👤 Cliente</h4>
+              <p><strong>{{ customerName() }}</strong> • CPF: {{ customerCpf() }}</p>
+              <small>{{ customerPhone() }} • {{ customerEmail() }}</small>
+            </div>
+
+            <div class="summary-block">
+              <h4>💳 Pagamento</h4>
+              <p><strong>Modalidade:</strong> {{ paymentMethod() }}</p>
+              <small>Total a pagar: {{ finalOrderTotal() | currencyBrl }}</small>
+            </div>
+          </div>
+
+          <div class="panel-actions">
+            <button type="button" class="btn btn-outline" (click)="prevStep()">← Voltar</button>
+            <button 
+              type="button" 
+              class="btn btn-accent btn-lg pulse-cta confirm-btn"
+              [disabled]="isSubmitting()"
+              (click)="confirmOrder()"
+            >
+              @if (isSubmitting()) {
+                <span>Enviando Pedido ao Açougue...</span>
+              } @else {
+                <span>Confirmar e Realizar Pedido ({{ finalOrderTotal() | currencyBrl }}) 🔥</span>
+              }
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Right Column: Persistent Order Summary Sidebar -->
+    <aside class="checkout-summary-sidebar">
+      <div class="summary-box">
+        <h3>Resumo da Compra</h3>
+        
+        <div class="summary-items-count">
+          <span>{{ cartService.itemsCount() }} item(ns) no pedido</span>
+        </div>
+
+        <div class="calc-lines">
+          <div class="calc-line">
+            <span>Subtotal:</span>
+            <span>{{ cartService.subtotal() | currencyBrl }}</span>
+          </div>
+
+          @if (cartService.couponDiscount() > 0) {
+            <div class="calc-line discount">
+              <span>Cupom de Desconto:</span>
+              <span>-{{ cartService.couponDiscount() | currencyBrl }}</span>
+            </div>
+          }
+
+          <div class="calc-line">
+            <span>Frete / Entrega:</span>
+            <span>
+              @if (deliveryFee() === 0) {
+                <strong class="free-fee">Grátis (R$ 0,00)</strong>
+              } @else {
+                {{ deliveryFee() | currencyBrl }}
+              }
+            </span>
+          </div>
+
+          <div class="calc-line total-line">
+            <span>Total Final:</span>
+            <span class="total-value">{{ finalOrderTotal() | currencyBrl }}</span>
+          </div>
+        </div>
+
+        <div class="security-guarantee">
+          <span class="shield-icon">🛡️</span>
+          <div class="guarantee-text">
+            <strong>Garantia de Qualidade Mané</strong>
+            <small>Carnes cruas resfriadas selecionadas, pesadas com rigor e seladas para máxima suculência.</small>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

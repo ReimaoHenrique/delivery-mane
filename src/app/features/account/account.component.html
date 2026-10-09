@@ -1,0 +1,182 @@
+<div class="account-page container">
+  <!-- Account Top Info Card -->
+  <div class="account-header-card">
+    <div class="user-avatar-info">
+      <div class="avatar-circle">🥩</div>
+      <div class="user-details">
+        <h2>{{ authService.currentCustomer()?.name }}</h2>
+        <p>{{ authService.currentCustomer()?.email }} • {{ authService.currentCustomer()?.phone }}</p>
+      </div>
+    </div>
+
+    <div class="account-header-actions">
+      <button type="button" class="btn btn-outline btn-sm" (click)="toggleAdmin()">
+        {{ authService.isAdminMode() ? 'Desativar Painel Admin' : 'Ativar Modo Admin' }}
+      </button>
+      @if (authService.isAdminMode()) {
+        <a routerLink="/admin" class="btn btn-accent btn-sm">Abrir Painel Admin 🛠️</a>
+      }
+    </div>
+  </div>
+
+  <!-- Layout: Tabs Nav + Content Area -->
+  <div class="account-layout">
+    <nav class="account-tabs-nav">
+      <button 
+        type="button" 
+        class="tab-btn" 
+        [class.active]="activeTab() === 'orders'"
+        (click)="activeTab.set('orders')"
+      >
+        <span>📦 Histórico de Pedidos</span>
+        <span class="count">{{ orderService.orders().length }}</span>
+      </button>
+
+      <button 
+        type="button" 
+        class="tab-btn" 
+        [class.active]="activeTab() === 'addresses'"
+        (click)="activeTab.set('addresses')"
+      >
+        <span>📍 Endereços Salvos</span>
+        <span class="count">{{ addressService.savedAddresses().length }}</span>
+      </button>
+
+      <button 
+        type="button" 
+        class="tab-btn" 
+        [class.active]="activeTab() === 'profile'"
+        (click)="activeTab.set('profile')"
+      >
+        <span>👤 Meus Dados Pessoais</span>
+      </button>
+    </nav>
+
+    <!-- Tab Content -->
+    <main class="account-main-content">
+      <!-- 1. Orders Tab -->
+      @if (activeTab() === 'orders') {
+        <div class="tab-pane animate-fade-in">
+          <div class="pane-header">
+            <h3>Seus Pedidos de Churrasco</h3>
+            <p>Acompanhe entregas em andamento ou repita um pedido anterior com 1 clique.</p>
+          </div>
+
+          @if (orderService.orders().length === 0) {
+            <div class="empty-orders">
+              <p>Você ainda não realizou nenhum pedido.</p>
+              <a routerLink="/montar-kit" class="btn btn-primary btn-sm">Montar Meu Primeiro Kit</a>
+            </div>
+          } @else {
+            <div class="orders-list">
+              @for (ord of orderService.orders(); track ord.id) {
+                <div class="order-card">
+                  <div class="order-top">
+                    <div>
+                      <span class="ord-num">#{{ ord.orderNumber }}</span>
+                      <span class="ord-date">{{ ord.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                    </div>
+                    <span class="ord-status badge badge-raw">{{ ord.statusLabel }}</span>
+                  </div>
+
+                  <div class="order-summary-row">
+                    <div class="order-items-preview">
+                      <strong>{{ ord.items.length }} produto(s):</strong>
+                      <small>
+                        @for (it of ord.items; track it.id) {
+                          {{ it.product?.name || it.customKit?.name }} |
+                        }
+                      </small>
+                    </div>
+
+                    <div class="order-total-box">
+                      <span class="tot-label">Total Pago</span>
+                      <span class="tot-price">{{ ord.total | currencyBrl }}</span>
+                    </div>
+                  </div>
+
+                  <div class="order-actions">
+                    <button type="button" class="btn btn-outline btn-sm" (click)="trackOrder(ord)">
+                      Acompanhar Entrega 🚚
+                    </button>
+                    <button type="button" class="btn btn-accent btn-sm" (click)="repeatOrder(ord)">
+                      Repetir Este Pedido 🔁
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      <!-- 2. Addresses Tab -->
+      @if (activeTab() === 'addresses') {
+        <div class="tab-pane animate-fade-in">
+          <div class="pane-header">
+            <h3>Endereços Salvos</h3>
+            <button type="button" class="btn btn-primary btn-sm" (click)="addressService.openLocationModal()">
+              + Adicionar Novo
+            </button>
+          </div>
+
+          <div class="addresses-grid">
+            @for (addr of addressService.savedAddresses(); track addr.id) {
+              <div class="addr-card">
+                <div class="addr-head">
+                  <strong>📍 {{ addr.name || 'Endereço' }}</strong>
+                  @if (addr.isDefault) {
+                    <span class="badge badge-success">Padrão</span>
+                  }
+                </div>
+                <p>{{ addr.street }}, nº {{ addr.number }} {{ addr.complement ? '(' + addr.complement + ')' : '' }}</p>
+                <small>{{ addr.neighborhood }} • {{ addr.city }}-{{ addr.state }} • CEP {{ addr.zipCode }}</small>
+                <div class="addr-foot">
+                  <button type="button" class="del-btn" (click)="deleteAddress(addr.id)">Excluir</button>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- 3. Profile Tab -->
+      @if (activeTab() === 'profile') {
+        <div class="tab-pane animate-fade-in">
+          <div class="pane-header">
+            <h3>Dados do Perfil</h3>
+            <p>Mantenha seus dados atualizados para entregas e faturamento.</p>
+          </div>
+
+          <form class="profile-form" (submit)="saveProfile()">
+            <div class="form-grid">
+              <div class="field">
+                <label>Nome Completo:</label>
+                <input type="text" [(ngModel)]="editName" name="name" class="form-input" />
+              </div>
+
+              <div class="field">
+                <label>E-mail:</label>
+                <input type="email" [(ngModel)]="editEmail" name="email" class="form-input" />
+              </div>
+
+              <div class="field">
+                <label>Telefone / WhatsApp:</label>
+                <input type="text" [(ngModel)]="editPhone" name="phone" class="form-input" />
+              </div>
+
+              <div class="field">
+                <label>CPF (para emissão fiscal):</label>
+                <input type="text" [(ngModel)]="editCpf" name="cpf" class="form-input" />
+              </div>
+            </div>
+
+            <div class="form-save-action">
+              <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+            </div>
+          </form>
+        </div>
+      }
+    </main>
+  </div>
+</div>

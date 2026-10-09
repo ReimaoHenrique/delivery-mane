@@ -1,0 +1,171 @@
+@if (cartService.isDrawerOpen()) {
+  <div class="cart-backdrop" (click)="close()"></div>
+  <aside class="cart-drawer animate-slide-in">
+    <!-- Header -->
+    <div class="drawer-header">
+      <div class="header-title-box">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <h3>Seu Pedido de Churrasco</h3>
+        <span class="count-badge">{{ cartService.itemsCount() }}</span>
+      </div>
+      <button class="close-btn" (click)="close()" aria-label="Fechar carrinho">✕</button>
+    </div>
+
+    <!-- Free Delivery Progress Bar -->
+    <div class="free-delivery-banner">
+      @if (cartService.isFreeDelivery()) {
+        <div class="free-shipping-achieved">
+          <span>🎉 Parabéns! Você ganhou <strong>Frete Grátis</strong></span>
+        </div>
+      } @else {
+        <div class="free-shipping-progress-text">
+          Faltam <strong>{{ cartService.amountRemainingForFreeDelivery() | currencyBrl }}</strong> para <strong>Frete Grátis</strong>
+        </div>
+        <div class="progress-bar-bg">
+          <div 
+            class="progress-bar-fill" 
+            [style.width.%]="(cartService.subtotal() / 200) * 100"
+          ></div>
+        </div>
+      }
+    </div>
+
+    <!-- Items List or Empty State -->
+    <div class="drawer-body">
+      @if (cartService.itemsCount() === 0) {
+        <div class="empty-cart-state">
+          <div class="empty-icon">🥩</div>
+          <h4>Seu carrinho está vazio</h4>
+          <p>Adicione cortes in natura ou monte um kit completo para o seu churrasco.</p>
+          <div class="empty-actions">
+            <a routerLink="/montar-kit" class="btn btn-accent" (click)="close()">
+              🔥 Montar meu Kit (3+ itens)
+            </a>
+            <a routerLink="/catalogo" class="btn btn-outline" (click)="close()">
+              Ver Catálogo de Carnes
+            </a>
+          </div>
+        </div>
+      } @else {
+        <div class="items-list">
+          @for (item of cartService.items(); track item.id) {
+            <!-- Custom Kit Item Row -->
+            @if (item.type === 'custom-kit' && item.customKit) {
+              <div class="cart-item-card kit-item-card">
+                <div class="kit-badge-header">
+                  <span class="kit-badge">🔥 Kit Personalizado</span>
+                  <span class="kit-discount">-{{ item.customKit.discountPercent }}% OFF</span>
+                </div>
+                <div class="kit-main-info">
+                  <h4 class="item-title">{{ item.customKit.name }}</h4>
+                  <span class="item-price">{{ item.subtotal | currencyBrl }}</span>
+                </div>
+                <div class="kit-components-summary">
+                  <small class="components-label">Composição ({{ item.customKit.items.length }} produtos):</small>
+                  <ul class="components-list">
+                    @for (comp of item.customKit.items; track comp.product.id) {
+                      <li>
+                        <span>• {{ comp.product.name }}</span>
+                        <strong>{{ comp.quantity | unitFormat:comp.product.unit }}</strong>
+                      </li>
+                    }
+                  </ul>
+                </div>
+                <div class="kit-footer-actions">
+                  <button type="button" class="remove-link" (click)="removeItem(item)">
+                    Remover Kit
+                  </button>
+                </div>
+              </div>
+            }
+
+            <!-- Single Product Item Row -->
+            @if (item.type === 'single-product' && item.product) {
+              <div class="cart-item-card product-item-card">
+                <img [src]="item.product.imageUrl" [alt]="item.product.name" class="item-thumb" />
+                <div class="item-details">
+                  <h4 class="item-title">{{ item.product.name }}</h4>
+                  <div class="item-price-unit">
+                    <span class="unit-p">{{ item.product.price | currencyBrl }} / {{ item.product.unit }}</span>
+                  </div>
+                  
+                  <div class="item-stepper-row">
+                    <div class="stepper-box">
+                      <button type="button" class="stepper-btn" (click)="decrementSingleProduct(item)">−</button>
+                      <span class="stepper-value">{{ (item.itemWeightOrUnit || 1) | unitFormat:item.product.unit }}</span>
+                      <button type="button" class="stepper-btn" (click)="incrementSingleProduct(item)">+</button>
+                    </div>
+                    <span class="line-subtotal">{{ item.subtotal | currencyBrl }}</span>
+                  </div>
+                </div>
+                <button type="button" class="delete-item-btn" (click)="removeItem(item)" title="Remover item">
+                  🗑️
+                </button>
+              </div>
+            }
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Drawer Footer: Totals & Checkout -->
+    @if (cartService.itemsCount() > 0) {
+      <div class="drawer-footer">
+        <!-- Coupon Form -->
+        <div class="coupon-section">
+          @if (cartService.appliedCoupon(); as c) {
+            <div class="applied-coupon-box">
+              <span class="coupon-code">🎟️ {{ c.code }} ({{ c.description }})</span>
+              <button type="button" class="remove-coupon-btn" (click)="removeCoupon()">Remover</button>
+            </div>
+          } @else {
+            <div class="coupon-form">
+              <input 
+                type="text" 
+                placeholder="Cupom de desconto (ex: MANE10)" 
+                [ngModel]="couponInput()" 
+                (ngModelChange)="couponInput.set($event)"
+                class="coupon-input"
+              />
+              <button type="button" class="btn btn-subtle btn-sm" (click)="applyCoupon()">Aplicar</button>
+            </div>
+          }
+        </div>
+
+        <!-- Totals Breakdown -->
+        <div class="totals-breakdown">
+          <div class="total-row">
+            <span>Subtotal dos cortes e itens</span>
+            <span>{{ cartService.subtotal() | currencyBrl }}</span>
+          </div>
+          @if (cartService.couponDiscount() > 0) {
+            <div class="total-row discount-row">
+              <span>Desconto de Cupom</span>
+              <span>-{{ cartService.couponDiscount() | currencyBrl }}</span>
+            </div>
+          }
+          <div class="total-row final-total-row">
+            <span class="total-label">Total Estimado</span>
+            <span class="total-amount">{{ cartService.total() | currencyBrl }}</span>
+          </div>
+          <small class="delivery-notice">
+            * A taxa de entrega será calculada na etapa seguinte (ou R$ 0,00 para retirada em loja).
+          </small>
+        </div>
+
+        <!-- Checkout Action Button -->
+        <button type="button" class="btn btn-accent btn-lg checkout-btn" (click)="goToCheckout()">
+          <span>Continuar para Entrega / Pagamento</span>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </div>
+    }
+  </aside>
+}

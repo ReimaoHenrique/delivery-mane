@@ -1,0 +1,284 @@
+<div class="admin-page container">
+  <!-- Top Admin Bar -->
+  <div class="admin-header-bar">
+    <div>
+      <span class="badge badge-sale">⚙️ Gestão de Açougue & E-commerce</span>
+      <h1>Painel de Controle — Delivery Mané</h1>
+      <p>Gerenciamento de cortes in natura, estoque variável de açougue, kits e pedidos.</p>
+    </div>
+
+    <div class="admin-top-actions">
+      <button type="button" class="btn btn-outline btn-sm" (click)="resetAllData()">
+        Restaurar Catálogo Padrão
+      </button>
+      <a routerLink="/" class="btn btn-primary btn-sm">Ver Loja Virtual →</a>
+    </div>
+  </div>
+
+  <!-- Admin Navigation Tabs -->
+  <div class="admin-tabs">
+    <button 
+      type="button" 
+      class="admin-tab" 
+      [class.active]="activeTab() === 'products'"
+      (click)="activeTab.set('products')"
+    >
+      🥩 Catálogo de Carnes & Itens ({{ productService.allProducts().length }})
+    </button>
+
+    <button 
+      type="button" 
+      class="admin-tab" 
+      [class.active]="activeTab() === 'orders'"
+      (click)="activeTab.set('orders')"
+    >
+      📦 Gestão de Pedidos ({{ orderService.orders().length }})
+    </button>
+
+    <button 
+      type="button" 
+      class="admin-tab" 
+      [class.active]="activeTab() === 'inventory'"
+      (click)="activeTab.set('inventory')"
+    >
+      ⚖️ Controle de Peso Variável & Estoque
+    </button>
+  </div>
+
+  <!-- Tab 1: Products List -->
+  @if (activeTab() === 'products') {
+    <div class="admin-panel-card animate-fade-in">
+      <div class="panel-top">
+        <h3>Cortes e Produtos Cadastrados</h3>
+        <button type="button" class="btn btn-accent btn-sm" (click)="openNewProductModal()">
+          + Novo Corte / Produto
+        </button>
+      </div>
+
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Foto</th>
+              <th>Nome do Produto</th>
+              <th>Categoria</th>
+              <th>Preço Unitário</th>
+              <th>Unidade</th>
+              <th>Estoque</th>
+              <th>Disponibilidade</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (prod of productService.allProducts(); track prod.id) {
+              <tr>
+                <td>
+                  <img [src]="prod.imageUrl" [alt]="prod.name" class="table-thumb" />
+                </td>
+                <td>
+                  <strong>{{ prod.name }}</strong>
+                  @if (prod.cutType) {
+                    <small class="cut-lbl">Corte: {{ prod.cutType }}</small>
+                  }
+                </td>
+                <td>
+                  <span class="cat-tag">{{ prod.category }}</span>
+                </td>
+                <td>
+                  <strong class="price-val">{{ prod.price | currencyBrl }}</strong>
+                </td>
+                <td>{{ prod.unit }}</td>
+                <td>
+                  <span [class.text-danger]="prod.stockQuantity < 10">{{ prod.stockQuantity }}</span>
+                </td>
+                <td>
+                  @if (prod.inStock) {
+                    <span class="badge badge-success">Em Estoque</span>
+                  } @else {
+                    <span class="badge badge-warning">Esgotado</span>
+                  }
+                </td>
+                <td>
+                  <div class="row-actions">
+                    <button type="button" class="btn-icon edit" (click)="editProduct(prod)" title="Editar">✏️</button>
+                    <button type="button" class="btn-icon del" (click)="deleteProduct(prod.id)" title="Excluir">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+
+  <!-- Tab 2: Orders Management -->
+  @if (activeTab() === 'orders') {
+    <div class="admin-panel-card animate-fade-in">
+      <div class="panel-top">
+        <h3>Pedidos Recebidos</h3>
+        <span class="orders-count">{{ orderService.orders().length }} pedidos registrados</span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Nº Pedido</th>
+              <th>Data/Hora</th>
+              <th>Cliente</th>
+              <th>Modalidade</th>
+              <th>Total</th>
+              <th>Status do Açougue</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (ord of orderService.orders(); track ord.id) {
+              <tr>
+                <td><strong>#{{ ord.orderNumber }}</strong></td>
+                <td>{{ ord.createdAt | date:'dd/MM HH:mm' }}</td>
+                <td>
+                  <strong>{{ ord.customer.name }}</strong>
+                  <small class="phone-lbl">{{ ord.customer.phone }}</small>
+                </td>
+                <td>
+                  @if (ord.fulfillmentType === 'delivery') {
+                    <span>🚚 Entrega ({{ ord.deliveryAddress?.neighborhood }})</span>
+                  } @else {
+                    <span>🏪 Retirada ({{ ord.pickupStore?.tradeName }})</span>
+                  }
+                </td>
+                <td><strong>{{ ord.total | currencyBrl }}</strong></td>
+                <td>
+                  <select 
+                    [value]="ord.status" 
+                    (change)="updateOrderStatus(ord.id, $event)" 
+                    class="status-select"
+                  >
+                    <option value="received">Recebido</option>
+                    <option value="confirmed">Confirmado</option>
+                    <option value="preparing">Em Separação</option>
+                    <option value="ready_or_out">Saiu / Pronto</option>
+                    <option value="completed">Concluído</option>
+                    <option value="cancelled">Cancelado</option>
+                  </select>
+                </td>
+                <td>
+                  <a [routerLink]="['/acompanhar', ord.id]" class="btn btn-subtle btn-sm">Ver Detalhes</a>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+
+  <!-- Tab 3: Variable Weight & Inventory -->
+  @if (activeTab() === 'inventory') {
+    <div class="admin-panel-card animate-fade-in">
+      <div class="panel-top">
+        <h3>Regras de Açougue: Peso Previsto x Peso Efetivo</h3>
+      </div>
+      <p class="desc-info">
+        Como carnes nobres são produtos in natura perecíveis, peças cruas como Picanha ou Costela podem ter pequenas variações na balança durante o corte.
+      </p>
+
+      <div class="inventory-rules-grid">
+        <div class="rule-box">
+          <h4>⚖️ Tolerância de Pesagem</h4>
+          <p>Diferença máxima de ±5% permitida na pesagem final do açougueiro sem necessidade de recálculo.</p>
+        </div>
+        <div class="rule-box">
+          <h4>❄️ Conservação em Cadeia Fria</h4>
+          <p>Itens resfriados mantidos entre 0ºC e 4ºC nas câmaras frias da Loja Matriz e Unidade Sul.</p>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Product Modal (Add / Edit) -->
+  @if (isProductModalOpen()) {
+    <div class="modal-backdrop" (click)="isProductModalOpen.set(false)"></div>
+    <div class="product-modal-card animate-fade-in">
+      <div class="modal-head">
+        <h3>{{ editingProduct() ? 'Editar Corte / Produto' : 'Cadastrar Novo Corte in Natura' }}</h3>
+        <button type="button" class="close-btn" (click)="isProductModalOpen.set(false)">✕</button>
+      </div>
+
+      <form class="product-form" (submit)="saveProduct()">
+        <div class="form-grid">
+          <div class="col-8">
+            <label>Nome do Produto *</label>
+            <input type="text" [(ngModel)]="productForm().name" name="name" required class="form-input" />
+          </div>
+
+          <div class="col-4">
+            <label>Categoria *</label>
+            <select [(ngModel)]="productForm().category" name="cat" class="form-select">
+              <option value="bovinos">Bovinos</option>
+              <option value="suinos">Suínos</option>
+              <option value="aves">Aves</option>
+              <option value="linguicas-espetinhos">Linguiças & Espetos</option>
+              <option value="carvao-acendedores">Carvão & Acendedores</option>
+              <option value="sais-temperos">Sais & Temperos</option>
+              <option value="bebidas">Bebidas</option>
+              <option value="acessorios">Acessórios</option>
+            </select>
+          </div>
+
+          <div class="col-4">
+            <label>Preço Unitário (R$) *</label>
+            <input type="number" step="0.1" [(ngModel)]="productForm().price" name="price" required class="form-input" />
+          </div>
+
+          <div class="col-4">
+            <label>Unidade de Venda *</label>
+            <select [(ngModel)]="productForm().unit" name="unit" class="form-select">
+              <option value="kg">kg (Quilo)</option>
+              <option value="un">un (Unidade)</option>
+              <option value="pacote">pacote</option>
+              <option value="garrafa">garrafa</option>
+              <option value="lata">lata</option>
+            </select>
+          </div>
+
+          <div class="col-4">
+            <label>Estoque Atual:</label>
+            <input type="number" [(ngModel)]="productForm().stockQuantity" name="stock" class="form-input" />
+          </div>
+
+          <div class="col-12">
+            <label>Descrição do Corte:</label>
+            <textarea [(ngModel)]="productForm().description" name="desc" rows="2" class="form-textarea"></textarea>
+          </div>
+
+          <div class="col-12">
+            <label>URL da Imagem:</label>
+            <input type="text" [(ngModel)]="productForm().imageUrl" name="img" class="form-input" />
+          </div>
+
+          <div class="col-6">
+            <label class="check-lbl">
+              <input type="checkbox" [(ngModel)]="productForm().inStock" name="inStock" />
+              <span>Produto Disponível para Venda</span>
+            </label>
+          </div>
+
+          <div class="col-6">
+            <label class="check-lbl">
+              <input type="checkbox" [(ngModel)]="productForm().featured" name="featured" />
+              <span>Destaque na Página Inicial</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" (click)="isProductModalOpen.set(false)">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar no Catálogo</button>
+        </div>
+      </form>
+    </div>
+  }
+</div>

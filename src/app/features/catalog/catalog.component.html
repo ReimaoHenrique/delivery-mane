@@ -1,0 +1,125 @@
+<div class="catalog-page container">
+  <!-- Page Header -->
+  <div class="catalog-header">
+    <div class="header-titles">
+      <span class="sub-tag">Delivery Tradicional de Carnes</span>
+      <h1>Catálogo Completo do Açougue</h1>
+      <p>Compre cortes nobres avulsos, carvão e bebidas sem precisar montar um kit mínimo.</p>
+    </div>
+
+    <div class="quick-kit-promo">
+      <span>Quer montar um kit personalizado com 5% OFF?</span>
+      <a routerLink="/montar-kit" class="btn btn-accent btn-sm">Montar Kit Agora 🔥</a>
+    </div>
+  </div>
+
+  <!-- Layout: Filters Sidebar + Products Grid -->
+  <div class="catalog-layout">
+    <!-- Filters Sidebar -->
+    <aside class="filters-sidebar">
+      <div class="filters-card">
+        <div class="filters-header">
+          <h3>Filtros de Busca</h3>
+          <button type="button" class="clear-filters-btn" (click)="resetFilters()">Limpar</button>
+        </div>
+
+        <!-- Search Input -->
+        <div class="filter-group">
+          <label>Buscar Produto ou Corte:</label>
+          <input 
+            type="text" 
+            placeholder="Ex: Picanha, Carvão..." 
+            [(ngModel)]="searchQuery" 
+            class="filter-input"
+          />
+        </div>
+
+        <!-- Category Radio List -->
+        <div class="filter-group">
+          <label>Categoria:</label>
+          <div class="filter-options-list">
+            <label class="radio-option">
+              <input type="radio" name="cat" [checked]="selectedCategory() === 'todas'" (change)="selectedCategory.set('todas')" />
+              <span>Todas as Categorias</span>
+            </label>
+            @for (cat of productService.categories(); track cat.id) {
+              @if (cat.id !== 'kits') {
+                <label class="radio-option">
+                  <input type="radio" name="cat" [checked]="selectedCategory() === cat.id" (change)="selectedCategory.set(cat.id)" />
+                  <span>{{ cat.name }}</span>
+                </label>
+              }
+            }
+          </div>
+        </div>
+
+        <!-- Meat Type Filter -->
+        <div class="filter-group">
+          <label>Tipo de Carne:</label>
+          <select [(ngModel)]="selectedMeatType" class="filter-select">
+            <option value="todos">Todos os Tipos</option>
+            <option value="bovino">Bovina (Angus e Nobres)</option>
+            <option value="suino">Suína (Costelinhas, Panceta)</option>
+            <option value="frango">Frango (Corações, Drumet)</option>
+            <option value="misto">Misto (Linguiças, Espetinhos)</option>
+          </select>
+        </div>
+
+        <!-- Max Price Slider -->
+        <div class="filter-group">
+          <div class="slider-header">
+            <label>Preço Máximo:</label>
+            <span class="price-val">até {{ maxPriceFilter() | currencyBrl }}</span>
+          </div>
+          <input 
+            type="range" 
+            min="10" 
+            max="180" 
+            step="5" 
+            [(ngModel)]="maxPriceFilter" 
+            class="price-slider"
+          />
+        </div>
+
+        <!-- Toggles -->
+        <div class="filter-group toggles-group">
+          <label class="checkbox-option">
+            <input type="checkbox" [(ngModel)]="inStockOnly" />
+            <span>Apenas com estoque disponível</span>
+          </label>
+
+          <label class="checkbox-option">
+            <input type="checkbox" [(ngModel)]="onlyOffers" />
+            <span>Apenas produtos em promoção</span>
+          </label>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Products Listing -->
+    <main class="products-main">
+      <div class="results-bar">
+        <span class="results-count">
+          Mostrando <strong>{{ filteredProducts().length }}</strong> produtos encontrados
+        </span>
+      </div>
+
+      @if (filteredProducts().length === 0) {
+        <div class="no-products-state">
+          <div class="no-icon">🔍</div>
+          <h3>Nenhum produto encontrado</h3>
+          <p>Tente ajustar os filtros de busca ou pesquise por outros termos.</p>
+          <button type="button" class="btn btn-outline" (click)="resetFilters()">
+            Limpar todos os filtros
+          </button>
+        </div>
+      } @else {
+        <div class="products-grid">
+          @for (prod of filteredProducts(); track prod.id) {
+            <app-product-card [product]="prod"></app-product-card>
+          }
+        </div>
+      }
+    </main>
+  </div>
+</div>

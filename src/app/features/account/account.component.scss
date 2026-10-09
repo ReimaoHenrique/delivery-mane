@@ -1,0 +1,318 @@
+.account-page {
+  padding: 2.5rem 1.25rem 5rem;
+}
+
+.account-header-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-sm);
+
+  .user-avatar-info {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+
+    .avatar-circle {
+      width: 56px;
+      height: 56px;
+      background-color: var(--color-primary-subtle);
+      border: 2px solid var(--color-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+    }
+
+    .user-details {
+      h2 {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: var(--color-primary);
+      }
+
+      p {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+      }
+    }
+  }
+
+  .account-header-actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+}
+
+.account-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.account-tabs-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: 1rem;
+
+  .tab-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-align: left;
+    transition: var(--transition);
+
+    &:hover {
+      background-color: var(--bg-surface-warm);
+      color: var(--color-primary);
+    }
+
+    &.active {
+      background-color: var(--color-primary);
+      color: #ffffff;
+
+      .count {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+      }
+    }
+
+    .count {
+      background-color: var(--bg-surface-warm);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      padding: 0.1rem 0.5rem;
+      border-radius: var(--radius-full);
+    }
+  }
+}
+
+.account-main-content {
+  .tab-pane {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .pane-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--color-primary);
+    }
+
+    p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+  }
+}
+
+/* Orders List */
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  .order-card {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    transition: var(--transition);
+
+    &:hover {
+      border-color: rgba(11, 61, 46, 0.3);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .order-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.85rem;
+
+      .ord-num {
+        font-weight: 800;
+        color: var(--color-primary);
+        font-size: 1rem;
+        margin-right: 0.75rem;
+      }
+
+      .ord-date {
+        font-size: 0.8rem;
+        color: var(--text-light);
+      }
+    }
+
+    .order-summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+      background-color: var(--bg-surface-warm);
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+
+      .order-items-preview {
+        flex: 1;
+
+        strong {
+          font-size: 0.85rem;
+          display: block;
+          margin-bottom: 0.2rem;
+        }
+
+        small {
+          font-size: 0.775rem;
+          color: var(--text-muted);
+        }
+      }
+
+      .order-total-box {
+        text-align: right;
+
+        .tot-label {
+          font-size: 0.7rem;
+          color: var(--text-light);
+          display: block;
+        }
+
+        .tot-price {
+          font-size: 1.15rem;
+          font-weight: 800;
+          color: var(--color-secondary);
+        }
+      }
+    }
+
+    .order-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+  }
+}
+
+/* Addresses Grid */
+.addresses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+
+  .addr-card {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+
+    .addr-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.4rem;
+
+      strong {
+        font-size: 0.95rem;
+        color: var(--color-primary);
+      }
+    }
+
+    p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.2rem;
+    }
+
+    small {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      display: block;
+      margin-bottom: 0.75rem;
+    }
+
+    .addr-foot {
+      display: flex;
+      justify-content: flex-end;
+
+      .del-btn {
+        color: var(--color-danger);
+        font-size: 0.75rem;
+        font-weight: 700;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+/* Profile Form */
+.profile-form {
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+
+      label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--text-muted);
+      }
+
+      .form-input {
+        padding: 0.6rem 0.75rem;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-sm);
+        font-size: 0.9rem;
+      }
+    }
+  }
+
+  .form-save-action {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 800px) {
+  .account-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .account-header-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}

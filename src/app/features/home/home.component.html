@@ -1,0 +1,251 @@
+<div class="home-page">
+  <!-- Hero Banner -->
+  <section class="hero-section">
+    <div class="container hero-container">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="fire-emoji">🔥</span>
+          <span>Carnes Selecionadas In Natura & Kits Sob Medida</span>
+        </div>
+        <h1 class="hero-title">
+          Vai ter churrasco? <br />
+          <span class="highlight">Deixa com o Mané!</span>
+        </h1>
+        <p class="hero-subtitle">
+          Escolha seus cortes crus, monte seu kit completo com carvão e bebidas e receba em casa em embalagem térmica ou retire no balcão da loja.
+        </p>
+        <div class="hero-actions">
+          <a routerLink="/montar-kit" class="btn btn-accent btn-lg pulse-cta">
+            <span>🔥 Montar meu churrasco</span>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+          <a routerLink="/catalogo" class="btn btn-outline-white btn-lg">
+            <span>Comprar carnes avulsas</span>
+          </a>
+        </div>
+
+        <div class="hero-trust-badges">
+          <div class="trust-badge">
+            <span class="check-icon">✓</span>
+            <span>Carnes 100% In Natura</span>
+          </div>
+          <div class="trust-badge">
+            <span class="check-icon">✓</span>
+            <span>Kits com 5% de Desconto</span>
+          </div>
+          <div class="trust-badge">
+            <span class="check-icon">✓</span>
+            <span>Entrega Refrigerada</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-card-preview">
+        <div class="kit-highlight-card">
+          <div class="card-tag">Destaque do Mané</div>
+          <img 
+            src="https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=600&q=80" 
+            alt="Picanha Angus e cortes in natura" 
+            class="hero-meat-img"
+          />
+          <div class="card-info">
+            <h3>Kit Churrasco dos Amigos</h3>
+            <p>Picanha Angus + Linguiça Artesanal + Carvão 3kg + Sal de Parrilla</p>
+            <div class="card-bottom">
+              <div class="price-box">
+                <span class="from-price">De R$ 185,00</span>
+                <span class="kit-price">R$ 168,90</span>
+              </div>
+              <a routerLink="/montar-kit" (click)="addSuggestedKit()" class="btn btn-primary btn-sm">
+                Montar Este Kit
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Visual Category Grid (iFood/AliExpress inspired) -->
+  <section class="categories-section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">O que você precisa para a brasa?</h2>
+          <p class="section-desc">Navegue pelas nossas categorias especializadas de carnes cruas e artigos de churrasco.</p>
+        </div>
+        <a routerLink="/catalogo" class="view-all-link">Ver Catálogo Completo →</a>
+      </div>
+
+      <div class="categories-grid">
+        @for (cat of productService.categories(); track cat.id) {
+          <a 
+            [routerLink]="cat.id === 'kits' ? '/montar-kit' : '/catalogo'" 
+            [queryParams]="cat.id === 'kits' ? null : { categoria: cat.id }"
+            class="category-card"
+            [class.category-kit-card]="cat.id === 'kits'"
+          >
+            <div class="category-img-box">
+              <img [src]="cat.bannerImage" [alt]="cat.name" loading="lazy" />
+              <div class="img-overlay"></div>
+            </div>
+            <div class="category-info">
+              <span class="category-name">{{ cat.name }}</span>
+              <small class="category-count">Ver cortes & itens</small>
+            </div>
+          </a>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Meat & BBQ Calculator Widget -->
+  <section class="calculator-section">
+    <div class="container">
+      <div class="calc-wrapper">
+        <div class="calc-left">
+          <span class="calc-badge">Ferramenta Mané</span>
+          <h2>Calculadora de Churrasco</h2>
+          <p>
+            Quantas pessoas vão ao churrasco? Nós calculamos a quantidade recomendada de carnes cruas, carvão e bebidas para não faltar nem sobrar!
+          </p>
+
+          <div class="calc-inputs-grid">
+            <div class="input-card">
+              <label>Adultos (comem carne)</label>
+              <div class="calc-stepper">
+                <button type="button" (click)="calcAdults.set(calcAdults() > 1 ? calcAdults() - 1 : 1)">−</button>
+                <span class="value">{{ calcAdults() }}</span>
+                <button type="button" (click)="calcAdults.set(calcAdults() + 1)">+</button>
+              </div>
+            </div>
+
+            <div class="input-card">
+              <label>Crianças (até 10 anos)</label>
+              <div class="calc-stepper">
+                <button type="button" (click)="calcChildren.set(calcChildren() > 0 ? calcChildren() - 1 : 0)">−</button>
+                <span class="value">{{ calcChildren() }}</span>
+                <button type="button" (click)="calcChildren.set(calcChildren() + 1)">+</button>
+              </div>
+            </div>
+
+            <div class="input-card">
+              <label>Pessoas que consomem Cerveja</label>
+              <div class="calc-stepper">
+                <button type="button" (click)="calcDrinkers.set(calcDrinkers() > 0 ? calcDrinkers() - 1 : 0)">−</button>
+                <span class="value">{{ calcDrinkers() }}</span>
+                <button type="button" (click)="calcDrinkers.set(calcDrinkers() + 1)">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="calc-right">
+          <div class="results-box">
+            <h3 class="results-title">Estimativa Recomendada:</h3>
+            
+            <div class="result-item">
+              <span class="item-icon">🥩</span>
+              <div class="item-data">
+                <strong class="item-qty">{{ calculatedMeatKg() }} kg</strong>
+                <span class="item-lbl">de Carnes Cruas Variadas</span>
+              </div>
+            </div>
+
+            <div class="result-item">
+              <span class="item-icon">🔥</span>
+              <div class="item-data">
+                <strong class="item-qty">{{ calculatedCharcoalKg() }} kg</strong>
+                <span class="item-lbl">de Carvão Vegetal Selecionado</span>
+              </div>
+            </div>
+
+            <div class="result-item">
+              <span class="item-icon">🍺</span>
+              <div class="item-data">
+                <strong class="item-qty">{{ calculatedBeerUnits() }} un</strong>
+                <span class="item-lbl">de Latas / Garrafas de Cerveja</span>
+              </div>
+            </div>
+
+            <a routerLink="/montar-kit" class="btn btn-accent btn-lg calc-btn">
+              Montar Kit com essas quantidades →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Meats & Cuts (Delivery Tradicional) -->
+  <section class="products-section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <span class="sub-badge">Cortes Nobres</span>
+          <h2 class="section-title">Destaques do Açougue Mané</h2>
+          <p class="section-desc">Carnes in natura resfriadas, porcionadas e embaladas com gelo térmico.</p>
+        </div>
+        <a routerLink="/catalogo" [queryParams]="{categoria: 'bovinos'}" class="view-all-link">Ver todas as carnes →</a>
+      </div>
+
+      <div class="products-grid">
+        @for (prod of productService.featuredProducts(); track prod.id) {
+          <app-product-card [product]="prod"></app-product-card>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Kit Builder Teaser Banner -->
+  <section class="kit-banner-section">
+    <div class="container">
+      <div class="kit-teaser-box">
+        <div class="teaser-text">
+          <span class="teaser-badge">Monte do Seu Jeito</span>
+          <h2>Crie seu Kit de Churrasco Personalizado</h2>
+          <p>
+            Selecione pelo menos <strong>3 produtos distintos</strong> (ex: Picanha + Carvão + Sal de Parrilla) e receba <strong>5% de desconto imediato</strong> em todo o seu kit!
+          </p>
+          <div class="teaser-steps-preview">
+            <div class="step-pill">1. Escolha as Carnes</div>
+            <div class="step-arrow">→</div>
+            <div class="step-pill">2. Carvão & Sais</div>
+            <div class="step-arrow">→</div>
+            <div class="step-pill">3. Bebidas Geladas</div>
+          </div>
+        </div>
+        <div class="teaser-action">
+          <a routerLink="/montar-kit" class="btn btn-accent btn-lg pulse-cta">
+            Abrir Montador de Kits 🔥
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Weekly Promotions -->
+  @if (productService.promotions().length > 0) {
+    <section class="products-section promotions-section">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <span class="sub-badge sale">Preço Especial</span>
+            <h2 class="section-title">Ofertas e Promoções da Semana</h2>
+            <p class="section-desc">Aproveite descontos exclusivos em cortes nobres e complementos.</p>
+          </div>
+          <a routerLink="/catalogo" [queryParams]="{ofertas: 'true'}" class="view-all-link">Ver todas as ofertas →</a>
+        </div>
+
+        <div class="products-grid">
+          @for (prod of productService.promotions(); track prod.id) {
+            <app-product-card [product]="prod"></app-product-card>
+          }
+        </div>
+      </div>
+    </section>
+  }
+</div>

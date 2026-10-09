@@ -1,0 +1,83 @@
+<div class="product-card" [class.compact]="compact" [class.out-of-stock]="!product.inStock">
+  <!-- Top Badges -->
+  <div class="card-badges">
+    @if (!product.inStock) {
+      <span class="badge badge-warning">Esgotado</span>
+    } @else if (product.promotion) {
+      <span class="badge badge-sale">-{{ product.promotion.discountPercent }}% OFF</span>
+    }
+
+    @if (product.category === 'bovinos' || product.category === 'suinos' || product.category === 'aves' || product.category === 'linguicas-espetinhos') {
+      <span class="badge badge-raw">🥩 Cru (In Natura)</span>
+    }
+  </div>
+
+  <!-- Product Image Container -->
+  <div class="image-wrapper">
+    <img 
+      [src]="product.imageUrl" 
+      [alt]="product.name" 
+      class="product-image"
+      loading="lazy"
+    />
+    @if (product.details?.servingGuide) {
+      <span class="serving-tag">{{ product.details?.servingGuide }}</span>
+    }
+  </div>
+
+  <!-- Card Body -->
+  <div class="card-body">
+    @if (product.cutType) {
+      <span class="cut-category">{{ product.cutType }}</span>
+    }
+
+    <h3 class="product-title" [title]="product.name">{{ product.name }}</h3>
+
+    @if (!compact) {
+      <p class="product-desc">{{ product.description }}</p>
+    }
+
+    <!-- Pricing Section -->
+    <div class="pricing-row">
+      <div class="price-info">
+        @if (product.promotion) {
+          <span class="old-price">{{ product.promotion.originalPrice | currencyBrl }}</span>
+        }
+        <div class="current-price-line">
+          <span class="price-value">{{ product.price | currencyBrl }}</span>
+          <span class="price-unit">/ {{ product.unit }}</span>
+        </div>
+      </div>
+
+      @if (product.details?.variableWeightAlert) {
+        <span class="variable-tag" title="O valor final pode ter leve variação conforme a pesagem exata da peça crua no balcão">⚖️ Peso variável</span>
+      }
+    </div>
+
+    <!-- Actions & Stepper -->
+    @if (product.inStock) {
+      <div class="card-actions">
+        <!-- Quantity Stepper -->
+        <div class="stepper-box">
+          <button type="button" class="stepper-btn" (click)="decrement()" aria-label="Diminuir quantidade">−</button>
+          <span class="stepper-value">{{ quantity() | unitFormat:product.unit }}</span>
+          <button type="button" class="stepper-btn" (click)="increment()" aria-label="Aumentar quantidade">+</button>
+        </div>
+
+        <!-- Add Button -->
+        <button type="button" class="btn btn-primary add-btn" (click)="addToCart()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <span>Adicionar</span>
+        </button>
+      </div>
+    } @else {
+      <button type="button" class="btn btn-subtle disabled-btn" disabled>
+        Indisponível no momento
+      </button>
+    }
+  </div>
+</div>

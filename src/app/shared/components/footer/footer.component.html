@@ -1,0 +1,96 @@
+<footer class="app-footer">
+  <!-- Freshness & Quality Badges -->
+  <div class="footer-features">
+    <div class="container features-grid">
+      <div class="feature-item">
+        <div class="feature-icon">🥩</div>
+        <div class="feature-content">
+          <h4>Carnes 100% In Natura</h4>
+          <p>Cortes resfriados e selecionados no padrão boutique de açougue.</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🧊</div>
+        <div class="feature-content">
+          <h4>Cadeia Fria Garantida</h4>
+          <p>Entregas com caixas térmicas e controle estrito de temperatura.</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🔥</div>
+        <div class="feature-content">
+          <h4>Kits Personalizados</h4>
+          <p>Monte seu kit de churrasco completo com cortes, carvão e bebidas.</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-content">
+          <h4>Entrega Expressa ou Retirada</h4>
+          <p>Receba em 45-60 min ou retire no balcão sem pagar frete.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Footer Content -->
+  <div class="container footer-main">
+    <div class="footer-grid">
+      <div class="footer-col brand-col">
+        <div class="footer-logo">
+          <span class="logo-title">DELIVERY <span class="accent">MANÉ</span></span>
+          <span class="logo-slogan">Seu churrasco começa aqui!</span>
+        </div>
+        <p class="brand-desc">
+          Especialistas em carnes nobres cruas, linguiças artesanais, carvão de alta densidade e tudo o que seu churrasco precisa, sem complicação.
+        </p>
+        <div class="disclaimer-alert">
+          <small>⚠️ <strong>Aviso Importante:</strong> Comercializamos exclusivamente carnes cruas (in natura resfriadas ou congeladas) para preparo em churrasqueira ou grelha. Não vendemos refeições prontas ou assadas.</small>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="col-title">Navegação Rápida</h4>
+        <ul class="footer-links">
+          <li><a routerLink="/montar-kit">🔥 Montador de Kits de Churrasco</a></li>
+          <li><a routerLink="/catalogo" [queryParams]="{categoria: 'bovinos'}">Cortes Bovinos Nobres</a></li>
+          <li><a routerLink="/catalogo" [queryParams]="{categoria: 'suinos'}">Costelinhas & Panceta</a></li>
+          <li><a routerLink="/catalogo" [queryParams]="{categoria: 'linguicas-espetinhos'}">Linguiças & Espetos Crus</a></li>
+          <li><a routerLink="/catalogo" [queryParams]="{categoria: 'carvao-acendedores'}">Carvão & Acendedores</a></li>
+          <li><a routerLink="/catalogo" [queryParams]="{categoria: 'bebidas'}">Cervejas & Bebidas</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="col-title">Atendimento & Lojas</h4>
+        <ul class="footer-contact">
+          <li>📍 <strong>Loja Matriz:</strong> Av. Central, 1250 - Centro</li>
+          <li>📍 <strong>Unidade Sul:</strong> Rod. Dr. Moura Gonzaga, 420</li>
+          <li>📞 <strong>WhatsApp do Churrasco:</strong> (48) 99888-7766</li>
+          <li>⏰ <strong>Horário:</strong> Seg a Sáb 08h às 20h | Dom 08h às 15h</li>
+          <li><a routerLink="/acompanhar" class="track-order-link">📦 Rastrear Meu Pedido</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="col-title">Formas de Pagamento</h4>
+        <p class="payment-desc">Aceitamos no checkout online e na entrega/retirada:</p>
+        <div class="payment-badges">
+          <span class="pay-tag pix">Pix Instantâneo</span>
+          <span class="pay-tag">Cartão de Crédito</span>
+          <span class="pay-tag">Débito</span>
+          <span class="pay-tag">VR / VA</span>
+          <span class="pay-tag">Dinheiro na Entrega</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="footer-bottom">
+      <p>© {{ currentYear }} Delivery Mané — Plataforma de Kits de Churrasco e Delivery de Carnes. Todos os direitos reservados.</p>
+      <div class="bottom-links">
+        <a routerLink="/admin" class="admin-link">Acesso Administrativo</a>
+      </div>
+    </div>
+  </div>
+</footer>
