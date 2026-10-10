@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './features/home/home.component';
 import { KitBuilderComponent } from './features/kit-builder/kit-builder.component';
+import { CalculatorComponent } from './features/calculator/calculator.component';
 import { CatalogComponent } from './features/catalog/catalog.component';
 import { CheckoutComponent } from './features/checkout/checkout.component';
 import { OrderTrackingComponent } from './features/order-tracking/order-tracking.component';
@@ -17,6 +18,11 @@ export const routes: Routes = [
     path: 'montar-kit',
     component: KitBuilderComponent,
     title: 'Montar Kit de Churrasco — Delivery Mané'
+  },
+  {
+    path: 'calculadora',
+    component: CalculatorComponent,
+    title: 'Calculadora de Churrasco — Delivery Mané'
   },
   {
     path: 'catalogo',

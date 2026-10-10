@@ -107,15 +107,18 @@
     <div class="container">
       <div class="calc-wrapper">
         <div class="calc-left">
-          <span class="calc-badge">Ferramenta Mané</span>
-          <h2>Calculadora de Churrasco</h2>
+          <span class="calc-badge">🧮 Ferramenta Inteligente</span>
+          <h2>Calculadora Rápida de Churrasco</h2>
           <p>
-            Quantas pessoas vão ao churrasco? Nós calculamos a quantidade recomendada de carnes cruas, carvão e bebidas para não faltar nem sobrar!
+            Quantas pessoas vão ao churrasco? Calculamos na hora a quantidade exata de carnes in natura, carvão e bebidas para seu churrasco ser um sucesso!
           </p>
 
           <div class="calc-inputs-grid">
             <div class="input-card">
-              <label>Adultos (comem carne)</label>
+              <div class="input-info">
+                <span class="input-icon">👨🦰</span>
+                <label>Adultos (comem carne)</label>
+              </div>
               <div class="calc-stepper">
                 <button type="button" (click)="calcAdults.set(calcAdults() > 1 ? calcAdults() - 1 : 1)">−</button>
                 <span class="value">{{ calcAdults() }}</span>
@@ -124,7 +127,10 @@
             </div>
 
             <div class="input-card">
-              <label>Crianças (até 10 anos)</label>
+              <div class="input-info">
+                <span class="input-icon">🧒</span>
+                <label>Crianças (até 10 anos)</label>
+              </div>
               <div class="calc-stepper">
                 <button type="button" (click)="calcChildren.set(calcChildren() > 0 ? calcChildren() - 1 : 0)">−</button>
                 <span class="value">{{ calcChildren() }}</span>
@@ -133,7 +139,10 @@
             </div>
 
             <div class="input-card">
-              <label>Pessoas que consomem Cerveja</label>
+              <div class="input-info">
+                <span class="input-icon">🍺</span>
+                <label>Consomem Cerveja</label>
+              </div>
               <div class="calc-stepper">
                 <button type="button" (click)="calcDrinkers.set(calcDrinkers() > 0 ? calcDrinkers() - 1 : 0)">−</button>
                 <span class="value">{{ calcDrinkers() }}</span>
@@ -141,17 +150,23 @@
               </div>
             </div>
           </div>
+
+          <div class="calc-links-row">
+            <a routerLink="/calculadora" class="calc-full-page-link">
+              ✨ Abrir Calculadora Completa (com cortes e acompanhamentos) →
+            </a>
+          </div>
         </div>
 
         <div class="calc-right">
           <div class="results-box">
-            <h3 class="results-title">Estimativa Recomendada:</h3>
+            <h3 class="results-title">Estimativa Sugerida:</h3>
             
             <div class="result-item">
               <span class="item-icon">🥩</span>
               <div class="item-data">
                 <strong class="item-qty">{{ calculatedMeatKg() }} kg</strong>
-                <span class="item-lbl">de Carnes Cruas Variadas</span>
+                <span class="item-lbl">de Carnes Cruas Selecionadas</span>
               </div>
             </div>
 
@@ -159,7 +174,7 @@
               <span class="item-icon">🔥</span>
               <div class="item-data">
                 <strong class="item-qty">{{ calculatedCharcoalKg() }} kg</strong>
-                <span class="item-lbl">de Carvão Vegetal Selecionado</span>
+                <span class="item-lbl">de Carvão Vegetal Mané</span>
               </div>
             </div>
 
@@ -167,13 +182,18 @@
               <span class="item-icon">🍺</span>
               <div class="item-data">
                 <strong class="item-qty">{{ calculatedBeerUnits() }} un</strong>
-                <span class="item-lbl">de Latas / Garrafas de Cerveja</span>
+                <span class="item-lbl">de Latas / Long Necks</span>
               </div>
             </div>
 
-            <a routerLink="/montar-kit" class="btn btn-accent btn-lg calc-btn">
-              Montar Kit com essas quantidades →
-            </a>
+            <div class="calc-actions-box">
+              <a routerLink="/calculadora" class="btn btn-primary btn-lg calc-btn">
+                🧮 Detalhar na Calculadora
+              </a>
+              <a routerLink="/montar-kit" class="btn btn-accent btn-lg calc-btn">
+                🔥 Montar Kit com 10% OFF →
+              </a>
+            </div>
           </div>
         </div>
       </div>

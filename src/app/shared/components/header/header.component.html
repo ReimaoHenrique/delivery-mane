@@ -8,6 +8,7 @@
       </div>
       <div class="top-right">
         <span class="delivery-highlight">🚚 Entregas em caixas térmicas refrigeradas</span>
+        <a routerLink="/calculadora" class="top-link">🧮 Calculadora de Churrasco</a>
         <a routerLink="/acompanhar" class="top-link">Acompanhar Pedido</a>
         @if (authService.isAdminMode()) {
           <a routerLink="/admin" class="admin-badge">Painel Admin Ativo</a>
@@ -149,6 +150,11 @@
             <span class="fire-icon">🔥</span>
             <strong>Montar meu Kit</strong>
             <span class="nav-tag">Mais Prático</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/calculadora" routerLinkActive="active" (click)="closeMobileMenu()">
+            🧮 Calculadora
           </a>
         </li>
         <li>

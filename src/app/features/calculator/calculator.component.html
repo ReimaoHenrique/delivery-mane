@@ -1,0 +1,410 @@
+<div class="calculator-page animate-fade-in">
+  <!-- Hero Banner -->
+  <section class="calc-hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span>🧮 Ferramenta Inteligente Mané</span>
+        </div>
+        <h1>Calculadora de Churrasco</h1>
+        <p class="hero-desc">
+          Chega de faltar carne ou sobrar quilos no final! Calcule as quantidades ideais de carnes cruas in natura, bebidas, carvão e acompanhamentos para o seu churrasco perfeito.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="container calc-container">
+    <div class="calc-grid-layout">
+      <!-- Left Config Form -->
+      <div class="calc-form-column">
+        <!-- Step 1: Convidados -->
+        <div class="config-card">
+          <div class="card-header">
+            <div class="step-badge">1</div>
+            <div>
+              <h3>Quem vai ao Churrasco?</h3>
+              <p>Defina o número de convidados para ajustarmos a proporção de consumo.</p>
+            </div>
+          </div>
+
+          <div class="guest-inputs-grid">
+            <!-- Homens -->
+            <div class="guest-card">
+              <div class="guest-info">
+                <span class="guest-icon">👨</span>
+                <div>
+                  <strong>Homens</strong>
+                  <small>~450g carne / pessoa</small>
+                </div>
+              </div>
+              <div class="guest-stepper">
+                <button type="button" class="stepper-btn" (click)="men.set(men() > 0 ? men() - 1 : 0)" [disabled]="men() === 0">−</button>
+                <span class="stepper-val">{{ men() }}</span>
+                <button type="button" class="stepper-btn" (click)="men.set(men() + 1)">+</button>
+              </div>
+            </div>
+
+            <!-- Mulheres -->
+            <div class="guest-card">
+              <div class="guest-info">
+                <span class="guest-icon">👩</span>
+                <div>
+                  <strong>Mulheres</strong>
+                  <small>~320g carne / pessoa</small>
+                </div>
+              </div>
+              <div class="guest-stepper">
+                <button type="button" class="stepper-btn" (click)="women.set(women() > 0 ? women() - 1 : 0)" [disabled]="women() === 0">−</button>
+                <span class="stepper-val">{{ women() }}</span>
+                <button type="button" class="stepper-btn" (click)="women.set(women() + 1)">+</button>
+              </div>
+            </div>
+
+            <!-- Crianças -->
+            <div class="guest-card">
+              <div class="guest-info">
+                <span class="guest-icon">🧒</span>
+                <div>
+                  <strong>Crianças (até 10 anos)</strong>
+                  <small>~180g carne / pessoa</small>
+                </div>
+              </div>
+              <div class="guest-stepper">
+                <button type="button" class="stepper-btn" (click)="children.set(children() > 0 ? children() - 1 : 0)" [disabled]="children() === 0">−</button>
+                <span class="stepper-val">{{ children() }}</span>
+                <button type="button" class="stepper-btn" (click)="children.set(children() + 1)">+</button>
+              </div>
+            </div>
+
+            <!-- Vegetarianos -->
+            <div class="guest-card">
+              <div class="guest-info">
+                <span class="guest-icon">🥗</span>
+                <div>
+                  <strong>Vegetarianos</strong>
+                  <small>Apenas queijo & pão</small>
+                </div>
+              </div>
+              <div class="guest-stepper">
+                <button type="button" class="stepper-btn" (click)="vegetarians.set(vegetarians() > 0 ? vegetarians() - 1 : 0)" [disabled]="vegetarians() === 0">−</button>
+                <span class="stepper-val">{{ vegetarians() }}</span>
+                <button type="button" class="stepper-btn" (click)="vegetarians.set(vegetarians() + 1)">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Duração e Apetite -->
+        <div class="config-card">
+          <div class="card-header">
+            <div class="step-badge">2</div>
+            <div>
+              <h3>Duração e Apetite</h3>
+              <p>Eventos mais longos ou com fominha exigem reforço nas quantidades.</p>
+            </div>
+          </div>
+
+          <div class="options-group">
+            <label class="group-label">Tempo estimado de brasa:</label>
+            <div class="pills-grid">
+              <button 
+                type="button" 
+                class="pill-btn" 
+                [class.active]="duration() === 'short'"
+                (click)="duration.set('short')"
+              >
+                ⏱ 2 a 3 Horas (Rápido)
+              </button>
+              <button 
+                type="button" 
+                class="pill-btn" 
+                [class.active]="duration() === 'standard'"
+                (click)="duration.set('standard')"
+              >
+                🔥 4 a 6 Horas (Padrão)
+              </button>
+              <button 
+                type="button" 
+                class="pill-btn" 
+                [class.active]="duration() === 'long'"
+                (click)="duration.set('long')"
+              >
+                🎉 +6 Horas (Dia Inteiro)
+              </button>
+            </div>
+          </div>
+
+          <div class="options-group">
+            <label class="group-label">Apetite da turma:</label>
+            <div class="pills-grid">
+              <button 
+                type="button" 
+                class="pill-btn" 
+                [class.active]="appetite() === 'moderate'"
+                (click)="appetite.set('moderate')"
+              >
+                🥪 Moderado / Petisco
+              </button>
+              <button 
+                type="button" 
+                class="pill-btn" 
+                [class.active]="appetite() === 'normal'"
+                (click)="appetite.set('normal')"
+              >
+                🥩 Padrão Churrasqueiro
+              </button>
+              <button 
+                type="button" 
+                class="pill-btn" 
+                [class.active]="appetite() === 'heavy'"
+                (click)="appetite.set('heavy')"
+              >
+                🦁 Fominha / Come Muito
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Seleção de Cortes -->
+        <div class="config-card">
+          <div class="card-header">
+            <div class="step-badge">3</div>
+            <div>
+              <h3>Cortes & Carnes Preferidas</h3>
+              <p>Marque os tipos de carne que deseja no cálculo para dividirmos os quilos.</p>
+            </div>
+          </div>
+
+          <div class="meat-selection-grid">
+            @for (opt of meatOptions(); track opt.id) {
+              <div 
+                class="meat-toggle-card" 
+                [class.selected]="opt.selected"
+                (click)="toggleMeat(opt.id)"
+              >
+                <div class="toggle-checkbox">
+                  @if (opt.selected) {
+                    <span>✓</span>
+                  }
+                </div>
+                <span class="meat-icon">{{ opt.icon }}</span>
+                <div class="meat-details">
+                  <strong>{{ opt.name }}</strong>
+                  <small>{{ opt.category | uppercase }}</small>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Step 4: Bebidas & Acompanhamentos -->
+        <div class="config-card">
+          <div class="card-header">
+            <div class="step-badge">4</div>
+            <div>
+              <h3>Bebidas, Carvão & Extras</h3>
+              <p>Ative o que você precisa que nós calculamos automaticamente.</p>
+            </div>
+          </div>
+
+          <div class="extras-grid">
+            <!-- Cerveja -->
+            <div class="extra-toggle-box" [class.active]="includeBeer()">
+              <div class="extra-top" (click)="includeBeer.set(!includeBeer())">
+                <input type="checkbox" [checked]="includeBeer()" (click)="$event.stopPropagation()" (change)="includeBeer.set(!includeBeer())" />
+                <span class="extra-icon">🍺</span>
+                <strong>Cervejas Geladas</strong>
+              </div>
+              @if (includeBeer()) {
+                <div class="extra-stepper-row">
+                  <small>Quantas pessoas bebem cerveja?</small>
+                  <div class="guest-stepper mini">
+                    <button type="button" class="stepper-btn" (click)="beerDrinkers.set(beerDrinkers() > 0 ? beerDrinkers() - 1 : 0)">−</button>
+                    <span class="stepper-val">{{ beerDrinkers() }}</span>
+                    <button type="button" class="stepper-btn" (click)="beerDrinkers.set(beerDrinkers() + 1)">+</button>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Carvão -->
+            <div class="extra-toggle-box" [class.active]="includeCharcoal()" (click)="includeCharcoal.set(!includeCharcoal())">
+              <div class="extra-top">
+                <input type="checkbox" [checked]="includeCharcoal()" />
+                <span class="extra-icon">🔥</span>
+                <div>
+                  <strong>Carvão & Acendedor</strong>
+                  <small class="d-block">Sacos de 4kg de alta densidade</small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Refrigerante / Suco -->
+            <div class="extra-toggle-box" [class.active]="includeSoda()" (click)="includeSoda.set(!includeSoda())">
+              <div class="extra-top">
+                <input type="checkbox" [checked]="includeSoda()" />
+                <span class="extra-icon">🥤</span>
+                <div>
+                  <strong>Refrigerantes & Sucos</strong>
+                  <small class="d-block">Garrafas de 2 Litros</small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pão de Alho -->
+            <div class="extra-toggle-box" [class.active]="includeGarlicBread()" (click)="includeGarlicBread.set(!includeGarlicBread())">
+              <div class="extra-top">
+                <input type="checkbox" [checked]="includeGarlicBread()" />
+                <span class="extra-icon">🥖</span>
+                <div>
+                  <strong>Pão de Alho Especial</strong>
+                  <small class="d-block">Pacotes com 400g</small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Queijo Coalho -->
+            <div class="extra-toggle-box" [class.active]="includeCheese()" (click)="includeCheese.set(!includeCheese())">
+              <div class="extra-top">
+                <input type="checkbox" [checked]="includeCheese()" />
+                <span class="extra-icon">🧀</span>
+                <div>
+                  <strong>Queijo Coalho no Espeto</strong>
+                  <small class="d-block">Pacote com 7 espetos</small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Gelo -->
+            <div class="extra-toggle-box" [class.active]="includeIce()" (click)="includeIce.set(!includeIce())">
+              <div class="extra-top">
+                <input type="checkbox" [checked]="includeIce()" />
+                <span class="extra-icon">🧊</span>
+                <div>
+                  <strong>Sacos de Gelo Filtrado</strong>
+                  <small class="d-block">Sacos de 5kg em cubo</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Summary Column (Sticky) -->
+      <div class="calc-summary-column">
+        <div class="summary-card">
+          <div class="summary-top">
+            <div>
+              <span class="res-badge">Resultado do Cálculo</span>
+              <h2>Lista Recomendada</h2>
+            </div>
+            <div class="guest-pill">
+              👥 {{ totalGuests() }} pessoas
+            </div>
+          </div>
+
+          <!-- Meat Total Highlight -->
+          <div class="meat-highlight-card">
+            <div class="meat-hl-icon">🥩</div>
+            <div class="meat-hl-info">
+              <span class="hl-label">Total de Carne Crua</span>
+              <strong class="hl-value">{{ totalMeatKg() }} kg</strong>
+              <small class="hl-sub">Dividido entre os cortes selecionados</small>
+            </div>
+          </div>
+
+          <!-- Detailed Breakdown List -->
+          <div class="breakdown-section">
+            <h4>🍖 Divisão de Carnes:</h4>
+            <div class="breakdown-list">
+              @for (item of meatBreakdown(); track item.id) {
+                <div class="breakdown-item">
+                  <span class="item-name">{{ item.icon }} {{ item.name }}</span>
+                  <strong class="item-amount">{{ item.kg }} kg</strong>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Consumables Breakdown -->
+          <div class="breakdown-section">
+            <h4>🔥 Insumos & Bebidas:</h4>
+            <div class="breakdown-list">
+              @if (includeCharcoal()) {
+                <div class="breakdown-item">
+                  <span class="item-name">🔥 Carvão Vegetal Mané</span>
+                  <strong class="item-amount">{{ charcoalKg() }} kg ({{ charcoalKg() / 4 }} sacos)</strong>
+                </div>
+                <div class="breakdown-item">
+                  <span class="item-name">⚡ Acendedor de Carvão</span>
+                  <strong class="item-amount">{{ firestarterUnits() }} un</strong>
+                </div>
+              }
+
+              @if (includeBeer()) {
+                <div class="breakdown-item">
+                  <span class="item-name">🍺 Cerveja Pilsen / IPA</span>
+                  <strong class="item-amount">{{ beerUnits() }} latas ({{ (beerUnits() / 12) | number:'1.1-1' }} cx)</strong>
+                </div>
+              }
+
+              @if (includeSoda()) {
+                <div class="breakdown-item">
+                  <span class="item-name">🥤 Refrigerante / Sucos</span>
+                  <strong class="item-amount">{{ sodaLiters() }} Litros</strong>
+                </div>
+              }
+
+              @if (includeGarlicBread()) {
+                <div class="breakdown-item">
+                  <span class="item-name">🥖 Pão de Alho Cremoso</span>
+                  <strong class="item-amount">{{ garlicBreadPacks() }} pacotes</strong>
+                </div>
+              }
+
+              @if (includeCheese()) {
+                <div class="breakdown-item">
+                  <span class="item-name">🧀 Queijo Coalho Espeto</span>
+                  <strong class="item-amount">{{ cheesePacks() }} pacotes</strong>
+                </div>
+              }
+
+              @if (includeIce()) {
+                <div class="breakdown-item">
+                  <span class="item-name">🧊 Gelo em Cubos</span>
+                  <strong class="item-amount">{{ iceBags() }} sacos de 5kg</strong>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Financial Estimate -->
+          <div class="cost-box">
+            <div class="cost-row">
+              <span>Estimativa Total:</span>
+              <strong class="total-price">{{ estimatedTotal() | currencyBrl }}</strong>
+            </div>
+            <div class="cost-row sub">
+              <span>Rateio por pessoa ({{ totalGuests() }} convidados):</span>
+              <strong class="person-price">{{ costPerPerson() | currencyBrl }}</strong>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="summary-actions">
+            <button type="button" class="btn btn-primary btn-lg action-btn" (click)="addAllToCart()">
+              🛒 Adicionar Lista ao Carrinho
+            </button>
+            <button type="button" class="btn btn-subtle action-btn" (click)="copyWhatsAppList()">
+              📱 Copiar Lista para WhatsApp
+            </button>
+            <a routerLink="/montar-kit" class="btn btn-outline action-btn">
+              🔥 Personalizar no Montador de Kits (10% OFF)
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

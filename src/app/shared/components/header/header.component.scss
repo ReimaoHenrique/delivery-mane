@@ -2,7 +2,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: var(--bg-surface);
+  background-color: var(--color-primary-dark);
   box-shadow: var(--shadow-sm);
   padding-top: env(safe-area-inset-top, 0px);
 }
@@ -416,6 +416,10 @@
 }
 
 @media (max-width: 768px) {
+  .app-header {
+    background-color: var(--color-primary);
+  }
+
   .top-bar {
     display: none;
   }
