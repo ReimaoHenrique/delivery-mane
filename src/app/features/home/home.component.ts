@@ -8,6 +8,7 @@ import { KitBuilderService } from '../../core/services/kit-builder.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
 import { CurrencyBrlPipe } from '../../shared/pipes/currency-brl.pipe';
+import { Product } from '../../core/models/product.model';
 
 @Component({
   selector: 'app-home',
@@ -26,6 +27,14 @@ export class HomeComponent {
   calcAdults = signal<number>(6);
   calcChildren = signal<number>(2);
   calcDrinkers = signal<number>(4);
+
+  // Daily cuts for everyday grilling
+  readonly dailyCutIds = ['bov-03', 'bov-05', 'bov-06', 'sui-02'] as const;
+  readonly dailyCuts = computed(() => 
+    this.dailyCutIds
+      .map(id => this.productService.getProductById(id))
+      .filter((p): p is Product => p !== undefined)
+  );
 
   // BBQ Calculator Calculations
   readonly calculatedMeatKg = computed(() => {
