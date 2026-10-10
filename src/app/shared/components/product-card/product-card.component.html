@@ -19,6 +19,7 @@
       [alt]="product.name" 
       class="product-image"
       loading="lazy"
+      (error)="onImageError($event)"
     />
     @if (product.details?.servingGuide) {
       <span class="serving-tag">{{ product.details?.servingGuide }}</span>

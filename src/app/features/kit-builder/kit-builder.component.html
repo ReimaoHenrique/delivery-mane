@@ -107,7 +107,7 @@
               >
                 <!-- Image & Tag -->
                 <div class="matrix-img-box">
-                  <img [src]="prod.imageUrl" [alt]="prod.name" loading="lazy" />
+                  <img [src]="prod.imageUrl" [alt]="prod.name" loading="lazy" (error)="onImageError($event)" />
                   <span class="meat-badge">Cru in Natura</span>
                   @if (kitBuilder.isProductSelected(prod.id)) {
                     <div class="selected-checkmark">✓ Selecionado</div>
@@ -177,7 +177,7 @@
                 [class.selected]="kitBuilder.isProductSelected(prod.id)"
               >
                 <div class="matrix-img-box">
-                  <img [src]="prod.imageUrl" [alt]="prod.name" loading="lazy" />
+                  <img [src]="prod.imageUrl" [alt]="prod.name" loading="lazy" (error)="onImageError($event)" />
                   @if (kitBuilder.isProductSelected(prod.id)) {
                     <div class="selected-checkmark">✓ Selecionado</div>
                   }

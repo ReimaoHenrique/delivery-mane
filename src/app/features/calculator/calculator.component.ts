@@ -50,12 +50,13 @@ export class CalculatorComponent {
 
   // Opções de Cortes Selecionados
   readonly meatOptions = signal<MeatOption[]>([
-    { id: 'picanha', name: 'Picanha Nobre Bovina', category: 'bovino', icon: '🥩', defaultShare: 0.35, selected: true, productId: 'prod-1' },
-    { id: 'fraldinha', name: 'Fraldinha na Mostarda / Grill', category: 'bovino', icon: '🥩', defaultShare: 0.25, selected: true, productId: 'prod-2' },
-    { id: 'costela', name: 'Costela de Tiras Bovina', category: 'bovino', icon: '🍖', defaultShare: 0.20, selected: false, productId: 'prod-3' },
-    { id: 'linguica', name: 'Linguiça Toscana Artesanal', category: 'linguica', icon: '🌭', defaultShare: 0.20, selected: true, productId: 'prod-7' },
-    { id: 'frango', name: 'Meio da Asa / Coxinha', category: 'frango', icon: '🍗', defaultShare: 0.15, selected: true, productId: 'prod-9' },
-    { id: 'panceta', name: 'Panceta Suína Crocante', category: 'suino', icon: '🥓', defaultShare: 0.15, selected: false, productId: 'prod-8' },
+    { id: 'picanha', name: 'Picanha Angus Prime (Crua)', category: 'bovino', icon: '🥩', defaultShare: 0.30, selected: true, productId: 'bov-01' },
+    { id: 'contrafile', name: 'Contra-Filé Angus Grill (Cru)', category: 'bovino', icon: '🥩', defaultShare: 0.25, selected: true, productId: 'bov-04' },
+    { id: 'fraldinha', name: 'Fraldinha Red Meat para Churrasco', category: 'bovino', icon: '🥩', defaultShare: 0.20, selected: true, productId: 'bov-03' },
+    { id: 'costela', name: 'Costela Bovina em Tiras Janela', category: 'bovino', icon: '🍖', defaultShare: 0.20, selected: false, productId: 'bov-05' },
+    { id: 'linguica', name: 'Linguiça Toscana Artesanal', category: 'linguica', icon: '🌭', defaultShare: 0.15, selected: true, productId: 'ling-01' },
+    { id: 'frango', name: 'Coxinha da Asa / Drumet Resfriada', category: 'frango', icon: '🍗', defaultShare: 0.15, selected: true, productId: 'ave-02' },
+    { id: 'panceta', name: 'Panceta Suína em Mantas (Crua)', category: 'suino', icon: '🥓', defaultShare: 0.15, selected: false, productId: 'sui-02' },
   ]);
 
   // Cálculos Computados
@@ -206,7 +207,7 @@ export class CalculatorComponent {
     let addedCount = 0;
     const allProds = this.productService.allProducts();
 
-    // 1. Carnes
+    // 1. Carnes Selecionadas
     this.meatBreakdown().forEach(item => {
       if (item.productId) {
         const prod = allProds.find(p => p.id === item.productId);
@@ -217,38 +218,56 @@ export class CalculatorComponent {
       }
     });
 
-    // 2. Carvão (prod-10)
+    // 2. Carvão (carv-01)
     if (this.includeCharcoal()) {
-      const charcoal = allProds.find(p => p.id === 'prod-10' || p.category === 'carvao-acendedores');
+      const charcoal = allProds.find(p => p.id === 'carv-01' || p.category === 'carvao-acendedores');
       if (charcoal) {
-        this.cartService.addProduct(charcoal, Math.max(1, Math.ceil(this.charcoalKg() / 4)));
+        this.cartService.addProduct(charcoal, Math.max(1, Math.ceil(this.charcoalKg() / 3)));
         addedCount++;
       }
     }
 
-    // 3. Pão de Alho (prod-15)
+    // 3. Pão de Alho (ling-04)
     if (this.includeGarlicBread()) {
-      const garlic = allProds.find(p => p.id === 'prod-15');
+      const garlic = allProds.find(p => p.id === 'ling-04' || p.cutType === 'Pão de Alho');
       if (garlic) {
         this.cartService.addProduct(garlic, this.garlicBreadPacks());
         addedCount++;
       }
     }
 
-    // 4. Queijo Coalho (prod-16)
+    // 4. Queijo Coalho (ling-05)
     if (this.includeCheese()) {
-      const cheese = allProds.find(p => p.id === 'prod-16');
+      const cheese = allProds.find(p => p.id === 'ling-05' || p.cutType === 'Queijo Coalho');
       if (cheese) {
         this.cartService.addProduct(cheese, this.cheesePacks());
         addedCount++;
       }
     }
 
-    // 5. Cerveja (prod-13)
+    // 5. Cerveja (beb-02)
     if (this.includeBeer() && this.beerUnits() > 0) {
-      const beer = allProds.find(p => p.id === 'prod-13');
+      const beer = allProds.find(p => p.id === 'beb-02');
       if (beer) {
-        this.cartService.addProduct(beer, Math.min(24, Math.max(1, Math.ceil(this.beerUnits() / 6))));
+        this.cartService.addProduct(beer, Math.min(48, Math.max(1, this.beerUnits())));
+        addedCount++;
+      }
+    }
+
+    // 6. Refrigerante (beb-04)
+    if (this.includeSoda() && this.sodaLiters() > 0) {
+      const soda = allProds.find(p => p.id === 'beb-04');
+      if (soda) {
+        this.cartService.addProduct(soda, Math.max(1, Math.ceil(this.sodaLiters() * 1.5)));
+        addedCount++;
+      }
+    }
+
+    // 7. Gelo (beb-06)
+    if (this.includeIce() && this.iceBags() > 0) {
+      const ice = allProds.find(p => p.id === 'beb-06');
+      if (ice) {
+        this.cartService.addProduct(ice, this.iceBags());
         addedCount++;
       }
     }

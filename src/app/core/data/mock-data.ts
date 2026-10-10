@@ -3,6 +3,33 @@ import { Store } from '../models/store.model';
 import { DeliveryOption, Address } from '../models/address.model';
 import { Coupon } from '../models/coupon.model';
 
+export const MOCK_DEFAULT_ADDRESSES: Address[] = [
+  {
+    id: 'addr-1',
+    name: 'Casa do Usuário',
+    zipCode: '88010-000',
+    street: 'Av. Central, 1250',
+    number: '125',
+    neighborhood: 'Centro',
+    city: 'Florianópolis',
+    state: 'SC',
+    referencePoint: 'Próximo ao Supermercado Mané',
+    isDefault: true
+  },
+  {
+    id: 'addr-2',
+    name: 'Chácara de Final de Semana',
+    zipCode: '88048-300',
+    street: 'Rod. Antônio Gonzaga',
+    number: '420',
+    neighborhood: 'Rio Tavares',
+    city: 'Florianópolis',
+    state: 'SC',
+    referencePoint: 'Perto do Campeche Shopping',
+    isDefault: false
+  }
+];
+
 export const MOCK_CATEGORIES: CategoryInfo[] = [
   {
     id: 'kits',
@@ -38,10 +65,10 @@ export const MOCK_CATEGORIES: CategoryInfo[] = [
   },
   {
     id: 'linguicas-espetinhos',
-    name: 'Linguiças & Espetinhos Crus',
+    name: 'Linguiças & Acompanhamentos',
     shortName: 'Linguiças',
     icon: 'sausage',
-    description: 'Linguiças artesanais toscanas, com queijo coalho e espetinhos montados in natura.',
+    description: 'Linguiças toscanas artesanais, queijo coalho, pão de alho e espetinhos in natura.',
     bannerImage: 'https://images.unsplash.com/photo-1597393353415-b3730f3719fe?auto=format&fit=crop&w=800&q=80'
   },
   {
@@ -49,8 +76,8 @@ export const MOCK_CATEGORIES: CategoryInfo[] = [
     name: 'Cervejas & Bebidas',
     shortName: 'Bebidas',
     icon: 'beer',
-    description: 'Cervejas artesanais, pilsen puro malte, refrigerantes e água mineral.',
-    bannerImage: 'https://images.unsplash.com/photo-1608270191763-71829633e08f?auto=format&fit=crop&w=800&q=80'
+    description: 'Cervejas artesanais IPA, puro malte, refrigerantes, água e gelo.',
+    bannerImage: 'https://images.unsplash.com/photo-1535958636474-b021ee887b13?auto=format&fit=crop&w=800&q=80'
   },
   {
     id: 'carvao-acendedores',
@@ -65,16 +92,16 @@ export const MOCK_CATEGORIES: CategoryInfo[] = [
     name: 'Sal Grosso & Sal de Parrilla',
     shortName: 'Sais e Temperos',
     icon: 'salt',
-    description: 'Sal de parrilla chimichurri, sal grosso e dry rubs especiais para churrasco.',
+    description: 'Sal de parrilla com chimichurri, sal grosso e dry rubs especiais para churrasco.',
     bannerImage: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80'
   },
   {
     id: 'acessorios',
-    name: 'Temperos & Acessórios',
+    name: 'Utensílios & Acessórios',
     shortName: 'Acessórios',
     icon: 'knife',
-    description: 'Tábuas nobres, grelhas em inox, pegadores com trava e facas especiais.',
-    bannerImage: 'https://images.unsplash.com/photo-1588165171080-c89acfa5a259?auto=format&fit=crop&w=800&q=80'
+    description: 'Tábuas maciças de madeira para churrasco, pegadores em inox e acessórios.',
+    bannerImage: 'https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?auto=format&fit=crop&w=800&q=80'
   }
 ];
 
@@ -86,13 +113,13 @@ export const MOCK_PRODUCTS: Product[] = [
     category: 'bovinos',
     meatType: 'bovino',
     cutType: 'Picanha',
-    description: 'Capa de gordura uniforme, marmoreio excepcional. Peça in natura resfriada para churrasco premium.',
+    description: 'Capa de gordura uniforme e espessa, marmoreio nível 4+. Peça nobre resfriada in natura pronta para fatiar ou assar inteira na brasa.',
     price: 98.90,
     unit: 'kg',
     unitStep: 0.5,
     minUnit: 0.5,
     maxUnit: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 45,
     featured: true,
@@ -102,7 +129,7 @@ export const MOCK_PRODUCTS: Product[] = [
       badgeText: 'Mais Vendida'
     },
     details: {
-      origin: 'Raça Angus Selecionada',
+      origin: 'Raça Black Angus Certificada',
       temperature: 'Resfriado (Cru)',
       servingGuide: 'Aprox. 350g por adulto',
       variableWeightAlert: true
@@ -120,7 +147,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unitStep: 0.5,
     minUnit: 0.5,
     maxUnit: 8,
-    imageUrl: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 30,
     featured: true,
@@ -142,7 +169,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unitStep: 0.5,
     minUnit: 0.5,
     maxUnit: 12,
-    imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1588347818036-558601350947?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 28,
     featured: false,
@@ -154,23 +181,24 @@ export const MOCK_PRODUCTS: Product[] = [
   },
   {
     id: 'bov-04',
-    name: 'Contra-Filé Grill Angus (Cru)',
+    name: 'Contra-Filé Angus Grill (Cru in Natura)',
     category: 'bovinos',
     meatType: 'bovino',
     cutType: 'Contra-Filé',
-    description: 'Chorizo em bifes grossos ou peça inteira in natura para selar na grelha.',
+    description: 'Bife de Chorizo com capa de gordura lateral nobre e maciez inigualável. Perfeito para grelhar em fogo forte.',
     price: 68.50,
     unit: 'kg',
     unitStep: 0.5,
     minUnit: 0.5,
     maxUnit: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 50,
     featured: true,
     details: {
       origin: 'Angus Certificado',
-      temperature: 'Resfriado (Cru)'
+      temperature: 'Resfriado (Cru)',
+      servingGuide: 'Bifes altos de 2 dedos'
     }
   },
   {
@@ -185,7 +213,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unitStep: 1.0,
     minUnit: 1.0,
     maxUnit: 15,
-    imageUrl: 'https://images.unsplash.com/photo-1546964124-0cce460f38ef?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1546964124-0cce460f38ef?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 22,
     featured: false,
@@ -207,7 +235,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unitStep: 0.5,
     minUnit: 0.5,
     maxUnit: 8,
-    imageUrl: 'https://images.unsplash.com/photo-1592417817098-8f3d6eb22509?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 18,
     featured: false
@@ -226,7 +254,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unitStep: 0.5,
     minUnit: 0.5,
     maxUnit: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 35,
     featured: true,
@@ -247,7 +275,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unitStep: 0.5,
     minUnit: 0.5,
     maxUnit: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 25,
     featured: false
@@ -264,7 +292,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unitStep: 0.5,
     minUnit: 0.5,
     maxUnit: 6,
-    imageUrl: 'https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 15,
     featured: false
@@ -283,7 +311,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unitStep: 0.5,
     minUnit: 0.5,
     maxUnit: 8,
-    imageUrl: 'https://images.unsplash.com/photo-1587593810167-a84920ea0781?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1587593810167-a84920ea0781?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 40,
     featured: true,
@@ -309,7 +337,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unitStep: 0.5,
     minUnit: 0.5,
     maxUnit: 12,
-    imageUrl: 'https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 50,
     featured: false
@@ -326,31 +354,31 @@ export const MOCK_PRODUCTS: Product[] = [
     unitStep: 0.5,
     minUnit: 0.5,
     maxUnit: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 30,
     featured: false
   },
 
-  // --- LINGUIÇAS & ESPETINHOS CRUS ---
+  // --- LINGUIÇAS, QUEIJOS & ACOMPANHAMENTOS ---
   {
     id: 'ling-01',
     name: 'Linguiça Toscana Artesanal com Ervas (Crua)',
     category: 'linguicas-espetinhos',
     meatType: 'misto',
     cutType: 'Linguiça Toscana',
-    description: '100% pernil suíno com tempero do Mané, embutida em tripa natural in natura.',
+    description: '100% pernil suíno com temperos naturais nobres, embutida em tripa natural in natura.',
     price: 32.90,
     unit: 'kg',
     unitStep: 0.5,
     minUnit: 0.5,
     maxUnit: 15,
-    imageUrl: 'https://images.unsplash.com/photo-1597393353415-b3730f3719fe?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1597393353415-b3730f3719fe?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 60,
     featured: true,
     details: {
-      origin: 'Produção Própria Mané',
+      origin: 'Receita Artesanal Especial',
       temperature: 'Resfriado (Cru)'
     }
   },
@@ -366,7 +394,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unitStep: 0.5,
     minUnit: 0.5,
     maxUnit: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1532550907401-a500c9a57435?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1532550907401-a500c9a57435?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 35,
     featured: true
@@ -383,9 +411,41 @@ export const MOCK_PRODUCTS: Product[] = [
     unitStep: 1,
     minUnit: 1,
     maxUnit: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 20,
+    featured: false
+  },
+  {
+    id: 'ling-04',
+    name: 'Pão de Alho Especial Cremoso 400g',
+    category: 'linguicas-espetinhos',
+    cutType: 'Pão de Alho',
+    description: 'Pão bolinha recheado com creme de alho suave, manteiga e queijo parmesão.',
+    price: 15.90,
+    unit: 'pacote',
+    unitStep: 1,
+    minUnit: 1,
+    maxUnit: 10,
+    imageUrl: 'https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?auto=format&fit=crop&w=800&q=80',
+    inStock: true,
+    stockQuantity: 40,
+    featured: true
+  },
+  {
+    id: 'ling-05',
+    name: 'Queijo Coalho no Espeto Tradicional (Pacote c/ 7 un)',
+    category: 'linguicas-espetinhos',
+    cutType: 'Queijo Coalho',
+    description: 'Espetos de queijo coalho com textura firme para dourar e casquinha crocante.',
+    price: 18.90,
+    unit: 'pacote',
+    unitStep: 1,
+    minUnit: 1,
+    maxUnit: 10,
+    imageUrl: 'https://images.unsplash.com/photo-1628088062854-d1870b4553da?auto=format&fit=crop&w=800&q=80',
+    inStock: true,
+    stockQuantity: 35,
     featured: false
   },
 
@@ -400,7 +460,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unitStep: 1,
     minUnit: 1,
     maxUnit: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 80,
     featured: true
@@ -415,7 +475,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unitStep: 1,
     minUnit: 1,
     maxUnit: 8,
-    imageUrl: 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 40,
     featured: false
@@ -424,13 +484,13 @@ export const MOCK_PRODUCTS: Product[] = [
     id: 'carv-03',
     name: 'Acendedor em Gel de Álcool 500ml',
     category: 'carvao-acendedores',
-    description: 'Acendimento rápido, limpo, sem fumaça e sem alterar o cheiro do churrasco.',
+    description: 'Acendimento rápido, limpo, sem fumaça e sem alterar o aroma do churrasco.',
     price: 12.90,
     unit: 'un',
     unitStep: 1,
     minUnit: 1,
     maxUnit: 6,
-    imageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 65,
     featured: true
@@ -445,7 +505,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unitStep: 1,
     minUnit: 1,
     maxUnit: 8,
-    imageUrl: 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 50,
     featured: false
@@ -462,7 +522,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unitStep: 1,
     minUnit: 1,
     maxUnit: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 70,
     featured: true
@@ -477,7 +537,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unitStep: 1,
     minUnit: 1,
     maxUnit: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 90,
     featured: false
@@ -492,39 +552,39 @@ export const MOCK_PRODUCTS: Product[] = [
     unitStep: 1,
     minUnit: 1,
     maxUnit: 8,
-    imageUrl: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 45,
     featured: false
   },
   {
     id: 'sal-04',
-    name: 'Dry Rub Mané Especial para Carnes Bovinas 180g',
+    name: 'Dry Rub Artesanal para Carnes e Brasa 180g',
     category: 'sais-temperos',
-    description: 'Mix artesanal de páprica defumada, açúcar mascavo, pimenta preta e especiarias.',
+    description: 'Mix artesanal de páprica defumada, açúcar mascavo, pimenta preta e especiarias nobres.',
     price: 22.00,
     unit: 'un',
     unitStep: 1,
     minUnit: 1,
     maxUnit: 6,
-    imageUrl: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 30,
     featured: false
   },
 
-  // --- BEBIDAS ---
+  // --- BEBIDAS & GELO ---
   {
     id: 'beb-01',
-    name: 'Cerveja Artesanal IPA Mané 600ml',
+    name: 'Cerveja Artesanal IPA Puro Malte 500ml',
     category: 'bebidas',
-    description: 'Cerveja artesanal com amargor equilibrado, notas cítricas e lúpulos nobres (6.2% ABV).',
+    description: 'Cerveja artesanal estilo American IPA com amargor marcante (55 IBU), aromas cítricos de lúpulos nobres (6.5% ABV).',
     price: 18.90,
     unit: 'garrafa',
     unitStep: 1,
     minUnit: 1,
     maxUnit: 24,
-    imageUrl: 'https://images.unsplash.com/photo-1608270191763-71829633e08f?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1535958636474-b021ee887b13?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 120,
     featured: true,
@@ -537,28 +597,28 @@ export const MOCK_PRODUCTS: Product[] = [
     id: 'beb-02',
     name: 'Cerveja Pilsen Puro Malte 350ml (Lata)',
     category: 'bebidas',
-    description: 'Leve, refrescante e perfeita para acompanhar a fumaça da brasa (4.8% ABV).',
+    description: 'Leve, refrescante e dourada. Puro malte 100% cevada, perfeita para acompanhar a brasa bem gelada (4.8% ABV).',
     price: 5.50,
     unit: 'lata',
     unitStep: 1,
     minUnit: 1,
     maxUnit: 48,
-    imageUrl: 'https://images.unsplash.com/photo-1608270191763-71829633e08f?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1566633806327-68e152aaf26d?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 200,
     featured: true
   },
   {
     id: 'beb-03',
-    name: 'Cerveja Weissbier de Trigo 500ml',
+    name: 'Cerveja Weissbier de Trigo Artesanal 500ml',
     category: 'bebidas',
-    description: 'Cerveja de trigo encorpada com aromas frutados de banana e cravo.',
+    description: 'Cerveja alemã de trigo não filtrada, muito encorpada com notas naturais de banana e cravo (5.2% ABV).',
     price: 16.50,
     unit: 'garrafa',
     unitStep: 1,
     minUnit: 1,
     maxUnit: 18,
-    imageUrl: 'https://images.unsplash.com/photo-1608270191763-71829633e08f?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1571613316887-6f8d5cbf7ef7?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 40,
     featured: false
@@ -573,7 +633,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unitStep: 1,
     minUnit: 1,
     maxUnit: 24,
-    imageUrl: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 100,
     featured: false
@@ -582,30 +642,45 @@ export const MOCK_PRODUCTS: Product[] = [
     id: 'beb-05',
     name: 'Água Mineral com Gás 500ml',
     category: 'bebidas',
-    description: 'Água mineral gaseificada natural.',
+    description: 'Água mineral gaseificada natural em garrafa.',
     price: 3.50,
     unit: 'garrafa',
     unitStep: 1,
     minUnit: 1,
     maxUnit: 24,
-    imageUrl: 'https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1559839914-17aae19cec71?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 80,
+    featured: false
+  },
+  {
+    id: 'beb-06',
+    name: 'Saco de Gelo Filtrado em Cubos 5kg',
+    category: 'bebidas',
+    description: 'Gelo filtrado de água potável em cubos sólidos, ideal para coolers e caixas térmicas.',
+    price: 12.00,
+    unit: 'pacote',
+    unitStep: 1,
+    minUnit: 1,
+    maxUnit: 10,
+    imageUrl: 'https://images.unsplash.com/photo-1544003484-3cd181d17917?auto=format&fit=crop&w=800&q=80',
+    inStock: true,
+    stockQuantity: 50,
     featured: false
   },
 
   // --- ACESSÓRIOS & UTENSÍLIOS ---
   {
     id: 'ace-01',
-    name: 'Tábua de Madeira Nobre Gravada Mané (45x30cm)',
+    name: 'Tábua de Madeira Nobre para Churrasco (45x30cm)',
     category: 'acessorios',
-    description: 'Tábua maciça de Muiracatiara tratada com óleo mineral. Canaleta profunda para sucos da carne.',
+    description: 'Tábua maciça de madeira tratada com óleo mineral atóxico. Canaleta profunda lateral para reter sucos da carne sem sujar a bancada.',
     price: 129.00,
     unit: 'un',
     unitStep: 1,
     minUnit: 1,
     maxUnit: 4,
-    imageUrl: 'https://images.unsplash.com/photo-1588165171080-c89acfa5a259?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 12,
     featured: true
@@ -620,7 +695,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unitStep: 1,
     minUnit: 1,
     maxUnit: 5,
-    imageUrl: 'https://images.unsplash.com/photo-1588165171080-c89acfa5a259?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1593618998160-e34014e67546?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     stockQuantity: 25,
     featured: false
@@ -702,51 +777,27 @@ export const MOCK_COUPONS: Coupon[] = [
     description: '10% de desconto no seu primeiro pedido de churrasco',
     discountType: 'percentage',
     value: 10,
-    minOrderValue: 80,
-    active: true
+    minOrderValue: 80.0,
+    active: true,
+    validUntil: new Date('2026-12-31')
   },
   {
-    code: 'FIMDESEMANA',
-    description: 'R$ 15 OFF em compras acima de R$ 150',
-    discountType: 'fixed',
-    value: 15,
-    minOrderValue: 150,
-    active: true
+    code: 'CHURRAS5',
+    description: '5% de desconto especial em kits montados',
+    discountType: 'percentage',
+    value: 5,
+    minOrderValue: 50.0,
+    active: true,
+    validUntil: new Date('2026-12-31')
   },
   {
     code: 'FRETEMANE',
-    description: 'Frete grátis em compras acima de R$ 200',
-    discountType: 'fixed',
-    value: 14.90,
-    minOrderValue: 200,
-    active: true
-  }
-];
-
-export const MOCK_DEFAULT_ADDRESSES: Address[] = [
-  {
-    id: 'addr-1',
-    name: 'Minha Casa',
-    zipCode: '88015-100',
-    street: 'Rua das Palmeiras',
-    number: '340',
-    complement: 'Apto 402 Bloco B',
-    neighborhood: 'Agronômica',
-    city: 'Florianópolis',
-    state: 'SC',
-    referencePoint: 'Próximo à pracinha',
-    isDefault: true
-  },
-  {
-    id: 'addr-2',
-    name: 'Espaço Churrasco / Sítio',
-    zipCode: '88062-000',
-    street: 'Estrada Geral da Lagoa',
-    number: '890',
-    neighborhood: 'Lagoa da Conceição',
-    city: 'Florianópolis',
-    state: 'SC',
-    referencePoint: 'Portão de madeira com placa do sítio',
-    isDefault: false
+    description: 'Frete Grátis acima de R$ 150',
+    discountType: 'percentage',
+    value: 100,
+    minOrderValue: 150.0,
+    maxDiscount: 14.90,
+    active: true,
+    validUntil: new Date('2026-12-31')
   }
 ];

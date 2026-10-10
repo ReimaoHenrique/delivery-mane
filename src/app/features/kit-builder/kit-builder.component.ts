@@ -143,4 +143,11 @@ export class KitBuilderComponent {
       this.router.navigate(['/checkout']);
     }
   }
+
+  onImageError(event: Event) {
+    const target = event.target as HTMLImageElement;
+    if (target) {
+      target.src = 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=800&q=80';
+    }
+  }
 }

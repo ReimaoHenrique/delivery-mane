@@ -2,7 +2,7 @@ import { Injectable, signal, computed } from '@angular/core';
 import { Product, CategoryInfo, ProductCategory, MeatType } from '../models/product.model';
 import { MOCK_PRODUCTS, MOCK_CATEGORIES } from '../data/mock-data';
 
-const PRODUCTS_STORAGE_KEY = 'delivery_mane_products_v1';
+const PRODUCTS_STORAGE_KEY = 'delivery_mane_products_v3';
 
 @Injectable({
   providedIn: 'root'
